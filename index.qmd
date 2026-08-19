@@ -1,26 +1,44 @@
 ---
-title: "Preface"
+title: "Introduction"
 ---
 
-These notes accompany BIOS 20153 Fundamentals of Ecology and Evolutionary Biology at the University of Chicago.
+These are the lecture notes for  **BIOS 20153 Fundamentals of Ecology and Evolutionary Biology**, Academic Year 2026-27. 
 
-## How to use these notes
+- *Who am I*: Stefano Allesina, Professor in the Department of Ecology & Evolution; at UofC since 2009.
+- *Main interests*: Theoretical and community ecology, dynamical systems, mathematical biology.
+- *Email*: sallesina@uchicago.edu
+- *Office*: Zoology 403a (next to Botany Pond)
+- *Office hours*: We can setup a time once per week, or you can setup a meeting/zoom via email.
 
-The notes are the primary reference for the course. They cover all material needed for the exams. Where the notes and the lectures differ, the notes take precedence.
+## Ecology
 
-## Prerequisites
+Ecology is the study of the distribution and abundance of organisms. 
 
-A working knowledge of single-variable calculus (derivatives, integrals, differential equations). No prior background in ecology or evolutionary biology is assumed.
+It considers organisms at the individual, population, community, ecosystem, and biosphere levels. In this class, we are going to focus on the population and community levels. Ecology overlaps with the closely related sciences of biogeography, evolutionary biology, genetics, ethology, and natural history.
 
-## Notation
+![Levels of biological organization relevant to ecology. Image: [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Levels_of_Organization.svg), CC BY-SA 3.0.](images/levels_of_organization.png){fig-align="center" width="60%"}
 
-A summary of notation conventions used throughout:
+## Approach
 
-| Symbol | Meaning |
-|--------|---------|
-| $n$ | population size or sample size |
-| $t$ | time |
-| $r$ | intrinsic growth rate |
-| $K$ | carrying capacity |
+Many factors determine the abundance and distribution of the organisms of a species, including:
 
-Full notation conventions are introduced as needed in each chapter.
+- The number of individuals in the population
+- The distribution of their age, sex, and size
+- The availability of resources
+- The presence of other species, including predators, prey, parasites, etc.
+- The environmental conditions
+
+Keeping track of these factors, and determine how the abundance of a space will change in time is very hard. Historically, the best strategy has been to take a **quantitative approach**, and write **mathematical models of population dynamics**. 
+
+Therefore, you will see a fair number of **equations** in this class. The prerequisites are single-variable calculus (and possibly some multivariate calculus)---all the rest will be explained in detail. Importantly:
+
+- you will **not** have to perform extensive calculations on the final, but
+- you will need to be able to **interpret equations that are provided**
+
+## Topics
+
+1. Unbounded growth
+    a. Demography, age structure
+    b. Endangered species
+2. Density-dependent growth
+

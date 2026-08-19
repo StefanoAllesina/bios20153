@@ -1,0 +1,21 @@
+{
+  "hash": "061e4405c156eee579b9d887282a8166",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Topic 2\"\n---\n\n\n\n\n\n\n\n\n## Overview {#sec-topic2-overview}\n\n<!-- Chapter content goes here -->\n",
+    "supporting": [
+      "02-topic_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {
+      "knitr": [
+        "{\"type\":\"list\",\"attributes\":{},\"value\":[]}"
+      ]
+    },
+    "preserve": null,
+    "postProcess": false
+  }
+}

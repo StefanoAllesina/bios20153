@@ -1,0 +1,15 @@
+{
+  "hash": "5054f7f9ae5feedae674c5f158902282",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Introduction\"\n---\n\n\n\n\n\n\n\n\n\n\n## Overview {#sec-intro-overview}\n\n<!-- Chapter content goes here -->\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
