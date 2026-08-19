@@ -12,7 +12,7 @@ These are the lecture notes for  **BIOS 20153 Fundamentals of Ecology and Evolut
 
 ## Ecology
 
-Ecology is the study of the distribution and abundance of organisms. 
+Ecology is the study of the **distribution and abundance of organisms**. 
 
 It considers organisms at the individual, population, community, ecosystem, and biosphere levels. In this class, we are going to focus on the population and community levels. Ecology overlaps with the closely related sciences of biogeography, evolutionary biology, genetics, ethology, and natural history.
 
@@ -28,7 +28,7 @@ Many factors determine the abundance and distribution of the organisms of a spec
 - The presence of other species, including predators, prey, parasites, etc.
 - The environmental conditions
 
-Keeping track of these factors, and determine how the abundance of a space will change in time is very hard. Historically, the best strategy has been to take a **quantitative approach**, and write **mathematical models of population dynamics**. 
+Keeping track of these factors, and determine how the abundance of a species will change in time is very hard. Historically, the best strategy has been to take a **quantitative approach**, and write **mathematical models of population dynamics**. 
 
 Therefore, you will see a fair number of **equations** in this class. The prerequisites are single-variable calculus (and possibly some multivariate calculus)---all the rest will be explained in detail. Importantly:
 
