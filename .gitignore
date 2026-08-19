@@ -1,0 +1,9 @@
+_book/
+_site/
+docs/
+*_files/
+.quarto/
+*.Rhistory
+.RData
+.Rproj.user/
+ignore/

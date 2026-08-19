@@ -1,0 +1,14 @@
+---
+title: "Topic 4"
+---
+
+```{r}
+#| label: setup
+#| include: false
+source("R/utils.R")
+source("R/figures.R")
+```
+
+## Overview {#sec-topic4-overview}
+
+<!-- Chapter content goes here -->

@@ -1,0 +1,26 @@
+---
+title: "Preface"
+---
+
+These notes accompany BIOS 20153 Fundamentals of Ecology and Evolutionary Biology at the University of Chicago.
+
+## How to use these notes
+
+The notes are the primary reference for the course. They cover all material needed for the exams. Where the notes and the lectures differ, the notes take precedence.
+
+## Prerequisites
+
+A working knowledge of single-variable calculus (derivatives, integrals, differential equations). No prior background in ecology or evolutionary biology is assumed.
+
+## Notation
+
+A summary of notation conventions used throughout:
+
+| Symbol | Meaning |
+|--------|---------|
+| $n$ | population size or sample size |
+| $t$ | time |
+| $r$ | intrinsic growth rate |
+| $K$ | carrying capacity |
+
+Full notation conventions are introduced as needed in each chapter.

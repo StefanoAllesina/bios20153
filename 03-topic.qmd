@@ -1,0 +1,14 @@
+---
+title: "Topic 3"
+---
+
+```{r}
+#| label: setup
+#| include: false
+source("R/utils.R")
+source("R/figures.R")
+```
+
+## Overview {#sec-topic3-overview}
+
+<!-- Chapter content goes here -->

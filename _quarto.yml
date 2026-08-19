@@ -1,0 +1,33 @@
+project:
+  type: book
+  output-dir: _book
+
+book:
+  title: "Fundamentals of Ecology and Evolutionary Biology"
+  subtitle: "BIOS 20153 Lecture Notes"
+  author: "Stefano Allesina"
+  date: today
+  chapters:
+    - index.qmd
+    - 01-intro.qmd
+    - 02-topic.qmd
+    - 03-topic.qmd
+    - 04-topic.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme: cosmo
+    number-sections: true
+    code-fold: false
+  pdf:
+    documentclass: scrbook
+    number-sections: true
+    colorlinks: true
+
+execute:
+  freeze: auto
+  echo: false
+  warning: false
+  message: false
