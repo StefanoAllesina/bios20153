@@ -121,8 +121,31 @@ $$
 P_{t+1} = (1+x)P_t
 $$
 
-If $x > 1$, the population will expand; if $x<1$ it will contract; if it is exactly $x=1$ it will remain constant. When the population is expanding, it will expand very rapidly; when it contracts, it will rapidly approach zero. The explosive nature of growth and decline has important consequences for natural populations, the spread of diseases, and even human society. 
+If $x > 0$, the population will expand; if $x<0$ it will contract; if it is exactly $x=0$ it will remain constant. When the population is expanding, it will expand very rapidly; when it contracts, it will rapidly approach zero. The explosive nature of growth and decline has important consequences for natural populations, the spread of diseases, and even human society. 
+
+These consequences were noted by Thomas Malthus, in the abrasive *An Essay on the Principle of Population* (@malthus1798essay):
+
+
+> Population, when unchecked, increases in a geometrical ratio. Subsistence increases only in an arithmetical ratio. A slight acquaintance with numbers will shew the immensity of the first power in comparison of the second.
+
+He concluded that, as a result, population growth naturally outpaces the food supply, inevitably leading to poverty, famine, and population reduction unless checked by moral restraint, disease, war, or starvation. These bleak conclusions attracted praise and harsh critique, making this slim treaise one of the most influential books of the last few centuries. 
+
+Among the critics, Marx and Engels were among the most vitriolic. Engels described Malthus's thesis as (@engels1844outlines):
+
+> the crudest, most barbarous theory that ever existed, a system of despair which struck down all those beautiful phrases about love thy neighbour and world citizenship
+
+In the realm of biology, the *struggle for existence* implicit in the competition for scarce resources inspired the founders of evolution and provided a mechanism for natural selection. Darwin wrote in *The Origin of Species* (@darwin1859origin):
+
+> This is the doctrine of Malthus, applied with manifold force to the animal and vegetable kingdoms, for in this case there can be no artificial increase of food, and no prudential restraint from marriage
+
+and in his autobiography:
+
+> In October 1838 [...] I happened to read for amusement 'Malthus on Population' [...] it at once struck me that under these circumstances favourable variations would tend to be preserved, and unfavourable ones to be destroyed. The result of this would be the formation of new species.
+
+Similarly, Wallace wrote in his autobiography (@wallace2016my):
+
+> But perhaps the most important book I read was Malthus's Principles of Population [...] It was the first great work I had yet read treating of any of the problems of philosophical biology, and its main principles remained with me as a permanent possession, and twenty years later gave me the long-sought clue to the effective agent in the evolution of organic species
 
 
 
-<!-- Chapter content goes here -->
+**References**
