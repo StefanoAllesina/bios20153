@@ -115,20 +115,24 @@ He found the number reasonable, but mused:
 
 We will return to this thought in the next chapter.
 
+
+::: {.callout-tip}
+## Geometric growth
 These are all cases of **geometric growth**, in which the population in the next period is given by:
 
 $$
 P_{t+1} = (1+x)P_t
 $$
 
-If $x > 0$, the population will expand; if $x<0$ it will contract; if it is exactly $x=0$ it will remain constant. When the population is expanding, it will expand very rapidly; when it contracts, it will rapidly approach zero. The explosive nature of growth and decline has important consequences for natural populations, the spread of diseases, and even human society. 
+If $x > 0$, the population will expand; if $x<0$ it will contract; if it is exactly $x=0$ it will remain constant. When the population is expanding, it will expand very rapidly; when it contracts, it will rapidly approach zero. 
+:::
 
-These consequences were noted by Thomas Malthus, in the abrasive *An Essay on the Principle of Population* (@malthus1798essay):
+The explosive nature of growth and decline has important consequences for natural populations, the spread of diseases, and even human society. Thomas Malthus, in the abrasive *An Essay on the Principle of Population* (@malthus1798essay) wrote that
 
 
 > Population, when unchecked, increases in a geometrical ratio. Subsistence increases only in an arithmetical ratio. A slight acquaintance with numbers will shew the immensity of the first power in comparison of the second.
 
-He concluded that, as a result, population growth naturally outpaces the food supply, inevitably leading to poverty, famine, and population reduction unless checked by moral restraint, disease, war, or starvation. These bleak conclusions attracted praise and harsh critique, making this slim treaise one of the most influential books of the last few centuries. 
+He concluded that, as a result, population growth naturally outpaces the food supply, inevitably leading to poverty, famine, and population reduction unless checked by moral restraint, disease, war, or starvation. These bleak conclusions attracted praise and harsh critique, making this slim treatise one of the most influential books of the last few centuries. 
 
 Among the critics, Marx and Engels were among the most vitriolic. Engels described Malthus's thesis as (@engels1844outlines):
 
@@ -146,6 +150,67 @@ Similarly, Wallace wrote in his autobiography (@wallace2016my):
 
 > But perhaps the most important book I read was Malthus's Principles of Population [...] It was the first great work I had yet read treating of any of the problems of philosophical biology, and its main principles remained with me as a permanent possession, and twenty years later gave me the long-sought clue to the effective agent in the evolution of organic species
 
+## Exponential growth
+
+The geometric growth model is well suited for populations where reproduction occurs in discrete time steps (such as seasonally breeding plants or animals). However, many populations, including humans and bacteria, reproduce continuously. To account for this, we can extend the discrete model into continuous time.
+
+::: {.callout-note}
+## Are births uniformly distributed throughout the year?
+
+The exponential growth model assumes a constant per-capita birth rate. But are births actually spread evenly across the calendar? The figure below shows the average number of births per calendar day in the United States, based on Social Security Administration records for 2000–2014.
+
+```{r}
+#| label: fig-births-by-day
+#| fig-cap: "Average daily births in the US (SSA data, 2000–2014). Red points mark major public holidays."
+#| echo: false
+plot_births_by_day()
+```
+
+Notice the sharp dips on Christmas Day, New Year's Day, and Independence Day. Why might that be? And what does it imply about the assumption of a constant birth rate in our model?
+:::
 
 
-**References**
+Suppose a population has an annual per-capita growth rate $r$. If reproduction occurs not just once a year, but is split into $k$ discrete reproductive periods per year, the growth rate per interval is $\frac{r}{k}$. The population size at time $t$ years becomes:
+
+$$
+N_t = N_0 \left(1 + \frac{r}{k}\right)^{kt}
+$$
+
+As reproduction becomes uninterrupted, the interval between births shrinks to zero ($k \to \infty$). In this continuous-time limit, we use the definition of Euler's number ($e$):
+
+$$
+e = \lim_{k \to \infty} \left(1 + \frac{1}{k}\right)^k \approx 2.71828
+$$ 
+
+Taking the limit as $k \to \infty$ transforms the discrete compounding model into the continuous exponential growth equation:
+
+$$
+N(t) = N(0) e^{rt}
+$$
+
+Here, $N(t)$ denotes population size at any time $t \ge 0$, whereas the discrete model only defined population size at integer steps ($t = 0, 1, 2, \ldots$).
+
+::: {.callout-important}
+## Key Distinction
+In discrete growth, population size $N_t$ is only defined at specific intervals ($t = 0, 1, 2 \ldots$). In continuous growth, $N(t)$ is defined for **all** $t \ge 0$.
+:::
+
+To find how fast the population is growing at any instant, we take the derivative of $N(t)$ with respect to time:
+
+$$
+\frac{dN(t)}{dt} = \frac{d}{dt} \left[ N(0) e^{rt} \right]
+$$
+
+Using the exponential derivative rule ($\frac{d}{dt} e^{rt} = r e^{rt}$):
+
+$$
+\frac{dN(t)}{dt} = r \cdot \underbrace{N(0) e^{rt}}_{N(t)} = r N(t)
+$$
+
+::: {.callout-tip}
+## Biological Meaning
+This reveals that the instantaneous growth rate ($\frac{dN}{dt}$) is simply the per-capita rate $r$ multiplied by the current population size $N(t)$.
+
+The interpretation of $r$ is the difference between birth and death rates per individual. If $r > 0$, the population grows; if $r < 0$, it declines; if $r = 0$, it remains constant.
+:::
+
