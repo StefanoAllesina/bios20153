@@ -1,5 +1,5 @@
 ---
-title: "Topic 4"
+title: "Density dependence"
 ---
 
 ```{r}
@@ -9,6 +9,6 @@ source("R/utils.R")
 source("R/figures.R")
 ```
 
-## Overview {#sec-topic4-overview}
+## Overview {#sec-topic2-overview}
 
 <!-- Chapter content goes here -->

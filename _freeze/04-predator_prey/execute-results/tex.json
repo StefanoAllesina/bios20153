@@ -1,0 +1,21 @@
+{
+  "hash": "073dd261902a823efbf0a3536a8dae31",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Predator-prey dynamics\"\n---\n\n\n\n\n\n\n\n\n## Overview {#sec-topic4-overview}\n\n<!-- Chapter content goes here -->\n",
+    "supporting": [
+      "04-predator_prey_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {
+      "knitr": [
+        "{\"type\":\"list\",\"attributes\":{},\"value\":[]}"
+      ]
+    },
+    "preserve": null,
+    "postProcess": false
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "hash": "073dd261902a823efbf0a3536a8dae31",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Topic 4\"\n---\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n## Overview {#sec-topic4-overview}\n\n<!-- Chapter content goes here -->\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

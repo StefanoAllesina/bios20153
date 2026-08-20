@@ -41,4 +41,13 @@ Therefore, you will see a fair number of **equations** in this class. The prereq
     a. Demography, age structure
     b. Endangered species
 2. Density-dependent growth
+    a. Logistic growth
+    b. Discrete generations & cycles
+    c. Fisheries management
+3. Pathogens
+    a. Consequences of vaccination
+    b. Effects of diseases on animal populations 
+4. Population Cycles
+    a. Predator-prey
+    b. Host-pathogen
 

@@ -10,10 +10,10 @@ book:
   downloads: [pdf]
   chapters:
     - index.qmd
-    - 01-intro.qmd
-    - 02-topic.qmd
-    - 03-topic.qmd
-    - 04-topic.qmd
+    - 01-unbounded.qmd
+    - 02-density_dependence.qmd
+    - 03-pathogens.qmd
+    - 04-predator_prey.qmd
 
 bibliography: references.bib
 

@@ -1,0 +1,128 @@
+---
+title: "Unbounded growth"
+---
+
+```{r}
+#| label: setup
+#| include: false
+source("R/utils.R")
+source("R/figures.R")
+```
+
+## Overview {#sec-intro-overview}
+
+
+## Historical models: geometric growth
+
+Maybe the first example showing how growth can rapidly lead to large populations can be found in the *Liber abaci* (1202) by Leonardo Da Pisa, known as Fibonacci. 
+
+> A certain man had one pair of rabbits together in a certain enclosed place, and one wishes to know how many are created from the pair in one year when it is the nature of them in a single month to bear another pair, and in the second month those born to bear also.
+
+What is a bit unclear from the description: each pair of rabbits matures in one month, and once mature it produces a new pair of immature rabbits per month. Moreover, rabbits do not die! Then, calling $R_t$ the number of rabbits at month $t$ we obtain the famous Fibonacci's sequence:
+
+$$
+1, 1, 2, 3, 5, 8, 13, \ldots
+$$
+
+By defining $R_1 = 1$ and $R_2 = 1$, we can write this implicitly as:
+
+$$
+R_t = R_{t-1} + R_{t - 2} \quad t \geq 3
+$$
+
+or solve the recursion to obtain:
+
+$$
+R_t = \dfrac{\phi^n - \psi^n}{\sqrt{5}}
+$$
+
+where we have defined the golden ratio $\phi = \frac{1}{2}(1 + \sqrt{5})$ and its conjugate $\psi = \frac{1}{2}(1 - \sqrt{5})$. Thus, after one year (12 months) we will have 144 rabbits, and after 3 years $R_{36} = 14,930,352$. Let's plot the growth of the population in time
+
+```{r}
+#| label: fig-fibonacci
+#| fig-cap: "Fibonacci's rabbits: number of pairs $R_t$ over 36 months."
+#| echo: false
+plot_fibonacci()
+```
+
+Because the numbers grow so rapidly, it is convenient to plot $\log R_t$ vs $t$
+
+```{r}
+#| label: fig-fibonacci-log
+#| fig-cap: "Log-scale plot of Fibonacci's rabbits: $\\log R_t$ grows nearly linearly, reflecting exponential growth."
+#| echo: false
+plot_fibonacci_log()
+```
+
+You can see that after some jiggling, the curve in the logarithmic scale approaches a line; this is because, for $n \gg 1$ we have 
+
+$$
+R_t \approx \phi R_{t-1}
+$$
+
+and thus the number of rabbits will grow of approximately 62% per month. Soon, rabbits would take over the world! 
+
+::: {.callout-note}
+## Rabbits in Australia
+
+On Christmas day 1859, Thomas Austin released 24 breeding rabbits (*Oryctolagus cuniculus*) on his estate as game for shooting parties. The rabbits soon expanded across the continent, growing to concerning numbers and with devastating impacts on both agriculture and wildlife.
+
+![Rabbit expansion in Australia. Figure 1 from @alves2022single.](images/australia.jpg){#fig-australia fig-align="center" width="90%"}
+
+Estimates vary widely (quantitative ecology was born in the late 1920s, and statistical ecology even later), but by 1910 there were about 1 billion rabbits roaming the continent. A recent genetic analysis (@alves2022single) has shown that they all descended from the original rabbits from Thomas Austin!
+:::
+
+In 1748, Leonard Euler published *Introductio in analysin infinitorum*, and included the following example:
+
+> If we assume that the human race was re-established by six individuals after the Flood—let us say, over a period of two hundred years—and that the population grew to one million, the question arises as to the rate at which the number of people must have increased annually.
+
+He started from the equation:
+
+$$
+P_{t+1} = (1 + x) P_t
+$$
+
+with $x$ the annual increase of the population. Iterating:
+
+$$
+\begin{aligned}
+P_1 &= (1 + x) P_0\\
+P_2 &= (1 + x) P_1 = (1 + x) (1+x) P_0 = (1+x)^2 P_0\\
+P_3 &= (1 + x) P_2 = (1+x)^3 P_0\\
+\ldots & \ldots\\
+P_n &= (1 + x) P_{n-1} = (1+x)^n P_0\\
+\end{aligned}
+$$
+
+Then one needs to solve (note---we write $\log$ as the natural logarithm):
+
+$$
+\begin{aligned}
+P_{200} &= (1+x)^{200}P_0\\
+10^6 &= (1 + x)^{200} 6\\
+\frac{10^6}{6} &= (1+x)^{200}\\
+\log \frac{10^6}{6} &= 200 \log(1+x)\\
+12.02 &\approx 200 \log(1+x)\\
+0.06 &\approx \log(1+x)\\
+1.062 &\approx 1+x\\
+x &\approx 0.062
+\end{aligned}
+$$
+
+He found the number reasonable, but mused:
+
+> But if, by the same rate of increase, the human population had grown over a period of 400 years, it would have risen to a number---16,666,666,666---which the entire earth would have been wholly inadequate to sustain.
+
+We will return to this thought in the next chapter.
+
+These are all cases of **geometric growth**, in which the population in the next period is given by:
+
+$$
+P_{t+1} = (1+x)P_t
+$$
+
+If $x > 1$, the population will expand; if $x<1$ it will contract; if it is exactly $x=1$ it will remain constant. When the population is expanding, it will expand very rapidly; when it contracts, it will rapidly approach zero. The explosive nature of growth and decline has important consequences for natural populations, the spread of diseases, and even human society. 
+
+
+
+<!-- Chapter content goes here -->

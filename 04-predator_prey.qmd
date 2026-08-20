@@ -1,5 +1,5 @@
 ---
-title: "Topic 3"
+title: "Predator-prey dynamics"
 ---
 
 ```{r}
@@ -9,6 +9,6 @@ source("R/utils.R")
 source("R/figures.R")
 ```
 
-## Overview {#sec-topic3-overview}
+## Overview {#sec-topic4-overview}
 
 <!-- Chapter content goes here -->

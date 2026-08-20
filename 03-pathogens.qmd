@@ -1,5 +1,5 @@
 ---
-title: "Introduction"
+title: "Pathogens"
 ---
 
 ```{r}
@@ -9,6 +9,6 @@ source("R/utils.R")
 source("R/figures.R")
 ```
 
-## Overview {#sec-intro-overview}
+## Overview {#sec-topic3-overview}
 
 <!-- Chapter content goes here -->
