@@ -154,41 +154,43 @@ Similarly, Wallace wrote in his autobiography (@wallace2016my):
 
 The geometric growth model is well suited for populations where reproduction occurs in discrete time steps (such as seasonally breeding plants or animals). However, many populations, including humans and bacteria, reproduce continuously. To account for this, we can extend the discrete model into continuous time.
 
-::: {.callout-note}
-## Are births uniformly distributed throughout the year?
-
-The exponential growth model assumes a constant per-capita birth rate. But are births actually spread evenly across the calendar? The figure below shows the average number of births per calendar day in the United States, based on Social Security Administration records for 2000–2014.
-
-```{r}
-#| label: fig-births-by-day
-#| fig-cap: "Average daily births in the US (SSA data, 2000–2014). Red points mark major public holidays."
-#| echo: false
-plot_births_by_day()
-```
-
-Notice the sharp dips on Christmas Day, New Year's Day, and Independence Day. Why might that be? And what does it imply about the assumption of a constant birth rate in our model?
-:::
-
-
 Suppose a population has an annual per-capita growth rate $r$. If reproduction occurs not just once a year, but is split into $k$ discrete reproductive periods per year, the growth rate per interval is $\frac{r}{k}$. The population size at time $t$ years becomes:
 
 $$
 N_t = N_0 \left(1 + \frac{r}{k}\right)^{kt}
 $$
 
-As reproduction becomes uninterrupted, the interval between births shrinks to zero ($k \to \infty$). In this continuous-time limit, we use the definition of Euler's number ($e$):
+Now we need to remember a key result from algebra: as $k$ increases, the term $\left(1 + \frac{r}{k}\right)^{k}$ approaches $e^r$. This is a consequence of the definition of Euler's number $e$:
 
 $$
-e = \lim_{k \to \infty} \left(1 + \frac{1}{k}\right)^k \approx 2.71828
-$$ 
+e = \lim_{x \to \infty} \left(1 + \frac{1}{x}\right)^x = 1 + \frac{1}{2} + \frac{1}{3!} + \frac{1}{4!} + \ldots = 2.71828 \ldots
+$$
 
-Taking the limit as $k \to \infty$ transforms the discrete compounding model into the continuous exponential growth equation:
+Now consider the change of variables:
+
+$$
+x = \frac{k}{r} \implies k = rx
+$$
+
+and therefore
+
+$$
+\left(1 + \frac{r}{k}\right)^{k} = \left(1 + \frac{1}{x}\right)^{rx} = \left[\left(1 + \frac{1}{x}\right)^x\right]^r 
+$$
+
+Because $\lim_{x \to \infty} \left(1 + \frac{1}{x}\right)^x = e$, we have
+
+$$
+\lim_{k \to \infty} \left(1 + \frac{r}{k}\right)^{k} = e^r
+$$
+
+In summary, taking the limit as $k \to \infty$ transforms the discrete compounding model into the continuous exponential growth equation:
 
 $$
 N(t) = N(0) e^{rt}
 $$
 
-Here, $N(t)$ denotes population size at any time $t \ge 0$, whereas the discrete model only defined population size at integer steps ($t = 0, 1, 2, \ldots$).
+Here, $N(t)$ denotes population size at any time $t \ge 0$.
 
 ::: {.callout-important}
 ## Key Distinction
@@ -212,5 +214,128 @@ $$
 This reveals that the instantaneous growth rate ($\frac{dN}{dt}$) is simply the per-capita rate $r$ multiplied by the current population size $N(t)$.
 
 The interpretation of $r$ is the difference between birth and death rates per individual. If $r > 0$, the population grows; if $r < 0$, it declines; if $r = 0$, it remains constant.
+
+If we divide both sides of the equation by $N(t)$, we compute the per-capita growth rate:
+
+$$
+\frac{1}{N(t)} \frac{dN(t)}{dt} = r
+$$
+
+This shows that the per-capita growth rate is constant, independent of population size. This is a key assumption of the exponential growth model. We say that the **growth of the population is independent of its density**.
 :::
+
+::: {.callout-note}
+## Are births uniformly distributed throughout the year?
+
+The exponential growth model assumes a constant per-capita birth rate. But are births actually spread evenly across the calendar? The figure below shows the average number of births per calendar day in the United States, based on Social Security Administration records for 2000–2014.
+
+```{r}
+#| label: fig-births-by-day
+#| fig-cap: "Average daily births in the US (SSA data, 2000–2014). Red points mark major public holidays."
+#| echo: false
+plot_births_by_day()
+```
+
+Notice the sharp dips on Christmas Day, New Year's Day, and Independence Day. Why might that be? And what does it imply about the assumption of a constant birth rate in our model?
+:::
+
+Consider again the solution 
+
+$$
+N(t) = N(0) e^{rt}
+$$
+
+and take the natural logarithm of both sides:
+
+$$
+\log N(t) = \log N(0) + rt
+$$
+
+This means that if we plot $\log N(t)$ against time $t$, we should see a straight line with slope $r$ and intercept $\log N(0)$. This is a useful property for analyzing population growth data: a semi-log plot reveals the behavior of the model at a glance, because growth ($r > 0$) appears as a line with positive slope, decline ($r < 0$) as a line with negative slope, and a constant population ($r = 0$) as a horizontal line.
+
+```{r}
+#| label: fig-exponential-growth
+#| fig-cap: "Semi-log plot of $N(t)$ for three values of $r$, with $N(0) = 1$. Growth, constancy, and decline appear as straight lines with positive, zero, and negative slope, respectively."
+#| echo: false
+plot_exponential_growth()
+```
+
+On the original (linear) scale, the same three trajectories make the asymmetry between growth and decline vivid: growing populations accelerate away rapidly, while declining ones approach zero gradually.
+
+```{r}
+#| label: fig-exponential-growth-linear
+#| fig-cap: "Population size $N(t)$ on a linear scale for the same three values of $r$ as @fig-exponential-growth."
+#| echo: false
+plot_exponential_growth_linear()
+```
+
+::: {.callout-note}
+## Human population growth
+
+The world human population at the end of the last Ice Age (~10,000 BCE) stood at roughly 4–5 million people. It took more than ten millennia to reach one billion (around 1800 CE), yet only two more centuries to multiply eightfold. The figure below shows this history on a log scale using estimates compiled by @owid_population from HYDE, Gapminder, and UN data.
+
+```{r}
+#| label: fig-human-population
+#| fig-cap: "World human population from 10,000 BCE to 2023 on a log scale (@owid_population). The slope is the intrinsic rate of increase $r$; note how it steepens after the Industrial Revolution."
+#| echo: false
+plot_human_population()
+```
+
+On the log scale, a constant $r$ would appear as a straight line. The curve is not straight: $r$ was low and roughly constant for millennia, then rose sharply after ~1800. What changed? Agricultural revolutions, industrialization, and advances in public health all reduced death rates while birth rates remained high — a transient but enormous surge in $r$ that Malthus could not have anticipated.
+:::
+
+Another notable feature of the exponential growth model is that if we divide both sides of the equation by $N(0)$, we find that the right-hand side depends only on the product $rt$, and not the population density. 
+
+$$
+\dfrac{N(t)}{N(0)} = e^{rt}
+$$
+
+Now suppose that the population has doubled in size after $\tau$ years. Then we have:
+
+$$
+\dfrac{N(\tau)}{N(0)} = 2 = e^{r\tau}
+$$
+
+How long does it take for a population to double in size? We can solve for $\tau$:
+
+$$
+\log 2 = r \tau \implies \tau = \frac{\log 2}{r}
+$$
+
+The value of $\log 2$ is approximately 0.693, so we can approximate the doubling time as:
+
+$$
+\tau \approx \frac{0.693}{r} \approx \frac{70}{100 \, r}
+$$
+
+This is known as the "rule of 70": a population with a constant growth rate of 1% will double in size after approximately 70 years, while a population with a constant growth rate of 10% will double in size after approximately 7 years.
+
+Naturally, a population can double in time only if $r>0$. If $r<0$, the population will halve in size after $\tau = \frac{\log 2}{|r|}$ years, instead.
+
+::: {.callout-note}
+## Radiocarbon dating and Ötzi the Iceman
+
+When $r < 0$, the exponential model describes decay rather than growth. One of the most consequential applications is **radiocarbon dating**, developed by Willard Libby at the University of Chicago — an achievement recognized with the Nobel Prize in Chemistry in 1960.
+
+All living organisms continuously exchange carbon with the atmosphere, maintaining a fixed ratio of radioactive $^{14}$C to stable $^{12}$C. Upon death, exchange stops and $^{14}$C decays exponentially. Its half-life is $t_{1/2} = 5730$ years, giving
+
+$$
+r = -\frac{\log 2}{5730} \approx -0.000121 \text{ yr}^{-1}
+$$
+
+By measuring the fraction of $^{14}$C remaining in a sample, one can invert the exponential equation and solve for the time elapsed since death.
+
+In September 1991, a mummified man — now known as Ötzi the Iceman — was found in a glacier at the Hauslabjoch on the Austrian–Italian border. Nine independent radiocarbon measurements of bone, tissue, and grass from his clothing were carried out by five laboratories [@prinoth1994iceman]. The figure shows these measurements together with their weighted average.
+
+```{r}
+#| label: fig-iceman-c14
+#| fig-cap: "Radiocarbon measurements of Ötzi the Iceman from nine laboratory analyses [@prinoth1994iceman]. Error bars show $\\pm 2\\sigma$; the dashed line and shaded band give the weighted mean $4546 \\pm 17$ yr BP."
+#| echo: false
+plot_iceman_c14()
+```
+
+The weighted mean of $4546 \pm 17$ yr BP — years before present, where "present" is conventionally 1950 CE — places Ötzi's death between approximately 3350 and 3100 BCE, during the Copper Age.
+:::
+
+
 
