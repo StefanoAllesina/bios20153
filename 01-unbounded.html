@@ -384,47 +384,31 @@ P_{t+1} = (1+x)P_t
 <section id="exponential-growth" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="exponential-growth"><span class="header-section-number">2.3</span> Exponential growth</h2>
 <p>The geometric growth model is well suited for populations where reproduction occurs in discrete time steps (such as seasonally breeding plants or animals). However, many populations, including humans and bacteria, reproduce continuously. To account for this, we can extend the discrete model into continuous time.</p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Are births uniformly distributed throughout the year?
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The exponential growth model assumes a constant per-capita birth rate. But are births actually spread evenly across the calendar? The figure below shows the average number of births per calendar day in the United States, based on Social Security Administration records for 2000–2014.</p>
-<div class="cell">
-<div class="cell-output-display">
-<div id="fig-births-by-day" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-births-by-day-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="01-unbounded_files/figure-html/fig-births-by-day-1.png" class="img-fluid figure-img" width="672">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-births-by-day-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2.4: Average daily births in the US (SSA data, 2000–2014). Red points mark major public holidays.
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p>Notice the sharp dips on Christmas Day, New Year’s Day, and Independence Day. Why might that be? And what does it imply about the assumption of a constant birth rate in our model?</p>
-</div>
-</div>
 <p>Suppose a population has an annual per-capita growth rate <span class="math inline">\(r\)</span>. If reproduction occurs not just once a year, but is split into <span class="math inline">\(k\)</span> discrete reproductive periods per year, the growth rate per interval is <span class="math inline">\(\frac{r}{k}\)</span>. The population size at time <span class="math inline">\(t\)</span> years becomes:</p>
 <p><span class="math display">\[
 N_t = N_0 \left(1 + \frac{r}{k}\right)^{kt}
 \]</span></p>
-<p>As reproduction becomes uninterrupted, the interval between births shrinks to zero (<span class="math inline">\(k \to \infty\)</span>). In this continuous-time limit, we use the definition of Euler’s number (<span class="math inline">\(e\)</span>):</p>
+<p>Now we need to remember a key result from algebra: as <span class="math inline">\(k\)</span> increases, the term <span class="math inline">\(\left(1 + \frac{r}{k}\right)^{k}\)</span> approaches <span class="math inline">\(e^r\)</span>. This is a consequence of the definition of Euler’s number <span class="math inline">\(e\)</span>:</p>
 <p><span class="math display">\[
-e = \lim_{k \to \infty} \left(1 + \frac{1}{k}\right)^k \approx 2.71828
+e = \lim_{x \to \infty} \left(1 + \frac{1}{x}\right)^x = 1 + \frac{1}{2} + \frac{1}{3!} + \frac{1}{4!} + \ldots = 2.71828 \ldots
 \]</span></p>
-<p>Taking the limit as <span class="math inline">\(k \to \infty\)</span> transforms the discrete compounding model into the continuous exponential growth equation:</p>
+<p>Now consider the change of variables:</p>
+<p><span class="math display">\[
+x = \frac{k}{r} \implies k = rx
+\]</span></p>
+<p>and therefore</p>
+<p><span class="math display">\[
+\left(1 + \frac{r}{k}\right)^{k} = \left(1 + \frac{1}{x}\right)^{rx} = \left[\left(1 + \frac{1}{x}\right)^x\right]^r
+\]</span></p>
+<p>Because <span class="math inline">\(\lim_{x \to \infty} \left(1 + \frac{1}{x}\right)^x = e\)</span>, we have</p>
+<p><span class="math display">\[
+\lim_{k \to \infty} \left(1 + \frac{r}{k}\right)^{k} = e^r
+\]</span></p>
+<p>In summary, taking the limit as <span class="math inline">\(k \to \infty\)</span> transforms the discrete compounding model into the continuous exponential growth equation:</p>
 <p><span class="math display">\[
 N(t) = N(0) e^{rt}
 \]</span></p>
-<p>Here, <span class="math inline">\(N(t)\)</span> denotes population size at any time <span class="math inline">\(t \ge 0\)</span>, whereas the discrete model only defined population size at integer steps (<span class="math inline">\(t = 0, 1, 2, \ldots\)</span>).</p>
+<p>Here, <span class="math inline">\(N(t)\)</span> denotes population size at any time <span class="math inline">\(t \ge 0\)</span>.</p>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -458,6 +442,157 @@ Biological Meaning
 <div class="callout-body-container callout-body">
 <p>This reveals that the instantaneous growth rate (<span class="math inline">\(\frac{dN}{dt}\)</span>) is simply the per-capita rate <span class="math inline">\(r\)</span> multiplied by the current population size <span class="math inline">\(N(t)\)</span>.</p>
 <p>The interpretation of <span class="math inline">\(r\)</span> is the difference between birth and death rates per individual. If <span class="math inline">\(r &gt; 0\)</span>, the population grows; if <span class="math inline">\(r &lt; 0\)</span>, it declines; if <span class="math inline">\(r = 0\)</span>, it remains constant.</p>
+<p>If we divide both sides of the equation by <span class="math inline">\(N(t)\)</span>, we compute the per-capita growth rate:</p>
+<p><span class="math display">\[
+\frac{1}{N(t)} \frac{dN(t)}{dt} = r
+\]</span></p>
+<p>This shows that the per-capita growth rate is constant, independent of population size. This is a key assumption of the exponential growth model. We say that the <strong>growth of the population is independent of its density</strong>.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Are births uniformly distributed throughout the year?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The exponential growth model assumes a constant per-capita birth rate. But are births actually spread evenly across the calendar? The figure below shows the average number of births per calendar day in the United States, based on Social Security Administration records for 2000–2014.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-births-by-day" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-births-by-day-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="01-unbounded_files/figure-html/fig-births-by-day-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-births-by-day-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.4: Average daily births in the US (SSA data, 2000–2014). Red points mark major public holidays.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Notice the sharp dips on Christmas Day, New Year’s Day, and Independence Day. Why might that be? And what does it imply about the assumption of a constant birth rate in our model?</p>
+</div>
+</div>
+<p>Consider again the solution</p>
+<p><span class="math display">\[
+N(t) = N(0) e^{rt}
+\]</span></p>
+<p>and take the natural logarithm of both sides:</p>
+<p><span class="math display">\[
+\log N(t) = \log N(0) + rt
+\]</span></p>
+<p>This means that if we plot <span class="math inline">\(\log N(t)\)</span> against time <span class="math inline">\(t\)</span>, we should see a straight line with slope <span class="math inline">\(r\)</span> and intercept <span class="math inline">\(\log N(0)\)</span>. This is a useful property for analyzing population growth data: a semi-log plot reveals the behavior of the model at a glance, because growth (<span class="math inline">\(r &gt; 0\)</span>) appears as a line with positive slope, decline (<span class="math inline">\(r &lt; 0\)</span>) as a line with negative slope, and a constant population (<span class="math inline">\(r = 0\)</span>) as a horizontal line.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-exponential-growth" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-exponential-growth-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="01-unbounded_files/figure-html/fig-exponential-growth-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-exponential-growth-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.5: Semi-log plot of <span class="math inline">\(N(t)\)</span> for three values of <span class="math inline">\(r\)</span>, with <span class="math inline">\(N(0) = 1\)</span>. Growth, constancy, and decline appear as straight lines with positive, zero, and negative slope, respectively.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>On the original (linear) scale, the same three trajectories make the asymmetry between growth and decline vivid: growing populations accelerate away rapidly, while declining ones approach zero gradually.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-exponential-growth-linear" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-exponential-growth-linear-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="01-unbounded_files/figure-html/fig-exponential-growth-linear-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-exponential-growth-linear-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.6: Population size <span class="math inline">\(N(t)\)</span> on a linear scale for the same three values of <span class="math inline">\(r\)</span> as <a href="#fig-exponential-growth" class="quarto-xref">Figure&nbsp;<span>2.5</span></a>.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Human population growth
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The world human population at the end of the last Ice Age (~10,000 BCE) stood at roughly 4–5 million people. It took more than ten millennia to reach one billion (around 1800 CE), yet only two more centuries to multiply eightfold. The figure below shows this history on a log scale using estimates compiled by <span class="citation" data-cites="owid_population">Our World in Data (<a href="#ref-owid_population" role="doc-biblioref">2024</a>)</span> from HYDE, Gapminder, and UN data.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-human-population" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-human-population-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="01-unbounded_files/figure-html/fig-human-population-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-human-population-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.7: World human population from 10,000 BCE to 2023 on a log scale (<span class="citation" data-cites="owid_population">Our World in Data (<a href="#ref-owid_population" role="doc-biblioref">2024</a>)</span>). The slope is the intrinsic rate of increase <span class="math inline">\(r\)</span>; note how it steepens after the Industrial Revolution.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>On the log scale, a constant <span class="math inline">\(r\)</span> would appear as a straight line. The curve is not straight: <span class="math inline">\(r\)</span> was low and roughly constant for millennia, then rose sharply after ~1800. What changed? Agricultural revolutions, industrialization, and advances in public health all reduced death rates while birth rates remained high — a transient but enormous surge in <span class="math inline">\(r\)</span> that Malthus could not have anticipated.</p>
+</div>
+</div>
+<p>Another notable feature of the exponential growth model is that if we divide both sides of the equation by <span class="math inline">\(N(0)\)</span>, we find that the right-hand side depends only on the product <span class="math inline">\(rt\)</span>, and not the population density.</p>
+<p><span class="math display">\[
+\dfrac{N(t)}{N(0)} = e^{rt}
+\]</span></p>
+<p>Now suppose that the population has doubled in size after <span class="math inline">\(\tau\)</span> years. Then we have:</p>
+<p><span class="math display">\[
+\dfrac{N(\tau)}{N(0)} = 2 = e^{r\tau}
+\]</span></p>
+<p>How long does it take for a population to double in size? We can solve for <span class="math inline">\(\tau\)</span>:</p>
+<p><span class="math display">\[
+\log 2 = r \tau \implies \tau = \frac{\log 2}{r}
+\]</span></p>
+<p>The value of <span class="math inline">\(\log 2\)</span> is approximately 0.693, so we can approximate the doubling time as:</p>
+<p><span class="math display">\[
+\tau \approx \frac{0.693}{r} \approx \frac{70}{100 \, r}
+\]</span></p>
+<p>This is known as the “rule of 70”: a population with a constant growth rate of 1% will double in size after approximately 70 years, while a population with a constant growth rate of 10% will double in size after approximately 7 years.</p>
+<p>Naturally, a population can double in time only if <span class="math inline">\(r&gt;0\)</span>. If <span class="math inline">\(r&lt;0\)</span>, the population will halve in size after <span class="math inline">\(\tau = \frac{\log 2}{|r|}\)</span> years, instead.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Radiocarbon dating and Ötzi the Iceman
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>When <span class="math inline">\(r &lt; 0\)</span>, the exponential model describes decay rather than growth. One of the most consequential applications is <strong>radiocarbon dating</strong>, developed by Willard Libby at the University of Chicago — an achievement recognized with the Nobel Prize in Chemistry in 1960.</p>
+<p>All living organisms continuously exchange carbon with the atmosphere, maintaining a fixed ratio of radioactive <span class="math inline">\(^{14}\)</span>C to stable <span class="math inline">\(^{12}\)</span>C. Upon death, exchange stops and <span class="math inline">\(^{14}\)</span>C decays exponentially. Its half-life is <span class="math inline">\(t_{1/2} = 5730\)</span> years, giving</p>
+<p><span class="math display">\[
+r = -\frac{\log 2}{5730} \approx -0.000121 \text{ yr}^{-1}
+\]</span></p>
+<p>By measuring the fraction of <span class="math inline">\(^{14}\)</span>C remaining in a sample, one can invert the exponential equation and solve for the time elapsed since death.</p>
+<p>In September 1991, a mummified man — now known as Ötzi the Iceman — was found in a glacier at the Hauslabjoch on the Austrian–Italian border. Nine independent radiocarbon measurements of bone, tissue, and grass from his clothing were carried out by five laboratories <span class="citation" data-cites="prinoth1994iceman">(<a href="#ref-prinoth1994iceman" role="doc-biblioref">Prinoth-Fornwagner and Niklaus 1994</a>)</span>. The figure shows these measurements together with their weighted average.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-iceman-c14" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-iceman-c14-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="01-unbounded_files/figure-html/fig-iceman-c14-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-iceman-c14-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2.8: Radiocarbon measurements of Ötzi the Iceman from nine laboratory analyses <span class="citation" data-cites="prinoth1994iceman">(<a href="#ref-prinoth1994iceman" role="doc-biblioref">Prinoth-Fornwagner and Niklaus 1994</a>)</span>. Error bars show <span class="math inline">\(\pm 2\sigma\)</span>; the dashed line and shaded band give the weighted mean <span class="math inline">\(4546 \pm 17\)</span> yr BP.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The weighted mean of <span class="math inline">\(4546 \pm 17\)</span> yr BP — years before present, where “present” is conventionally 1950 CE — places Ötzi’s death between approximately 3350 and 3100 BCE, during the Copper Age.</p>
 </div>
 </div>
 
@@ -474,6 +609,12 @@ Engels, Friedrich. 1844. <span>“Outlines of a Critique of Political Economy.�
 </div>
 <div id="ref-malthus1798essay" class="csl-entry" role="listitem">
 Malthus, Thomas Robert. 1798. <span>“Essay on Principle of Population.”</span> Readex Microprint.
+</div>
+<div id="ref-owid_population" class="csl-entry" role="listitem">
+Our World in Data. 2024. <span>“Population.”</span> <a href="https://ourworldindata.org/grapher/population" class="uri">https://ourworldindata.org/grapher/population</a>.
+</div>
+<div id="ref-prinoth1994iceman" class="csl-entry" role="listitem">
+Prinoth-Fornwagner, R., and Th.R. Niklaus. 1994. <span>“The Man in the Ice: Results from Radiocarbon Dating.”</span> <em>Nuclear Instruments and Methods in Physics Research B</em> 92: 282–90.
 </div>
 <div id="ref-wallace2016my" class="csl-entry" role="listitem">
 Wallace, Alfred Russel. 2016. <em>My Life a Record of Events and Opinions</em>. Read Books Ltd.
