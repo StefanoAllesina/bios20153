@@ -11,4 +11,101 @@ source("R/figures.R")
 
 ## Overview {#sec-topic2-overview}
 
-<!-- Chapter content goes here -->
+## Limits to growth: the logistic model {#sec-logistic}
+
+## Density dependence in the real world {#sec-density-dependence}
+
+## The logistic map
+
+The **logistic map** is the simplest discrete-time model that produces both stable dynamics and chaos:
+
+$$
+N_{t+1} = r \, N_t (1 - N_t)
+$$
+
+where $N_t \in [0, 1]$ is the population scaled by its maximum and $r \in [0, 4]$ is the growth parameter. For $r < 1$ the population collapses to zero; for $1 < r < 3$ it converges to a stable equilibrium $N^* = 1 - 1/r$; beyond $r = 3$ the equilibrium destabilises through a cascade of period-doubling bifurcations that culminates in deterministic chaos near $r \approx 3.57$.
+
+```{r}
+#| label: logistic-grid
+#| include: false
+n_r    <- 400L
+n_burn <- 500L
+n_keep <- 100L
+
+r_vals <- seq(1, 4, length.out = n_r)
+
+bif_grid <- purrr::map_dfr(seq_len(n_r), function(idx) {
+  r <- r_vals[idx]; N <- 0.5
+  for (j in seq_len(n_burn)) N <- r * N * (1 - N)
+  Ns <- numeric(n_keep)
+  for (j in seq_len(n_keep)) { N <- r * N * (1 - N); Ns[j] <- round(N, 5) }
+  tibble(r = round(r, 4), N = Ns)
+})
+
+ojs_define(bif_grid = bif_grid)
+```
+
+::: {.content-visible when-format="html"}
+```{ojs}
+viewof r_val  = Inputs.range([1, 4],       {step: 0.01, value: 2,   label: "r"})
+viewof n0_val = Inputs.range([0.01, 0.99], {step: 0.01, value: 0.5, label: "N₀"})
+
+bif_arr = transpose(bif_grid)
+
+n_ts = 100
+ts_data = {
+  const pts = [{t: 0, N: n0_val}]
+  let N = n0_val
+  for (let t = 1; t <= n_ts; t++) {
+    N = r_val * N * (1 - N)
+    pts.push({t, N})
+  }
+  return pts
+}
+
+ts_plot = Plot.plot({
+  width: 290, height: 250,
+  x: {label: "t"},
+  y: {domain: [0, 1], label: "Nₜ"},
+  title: `N₀ = ${n0_val.toFixed(2)},  r = ${r_val.toFixed(2)}`,
+  marks: [
+    Plot.line(ts_data, {x: "t", y: "N", stroke: "#2980b9", strokeWidth: 1.2}),
+    Plot.dot(ts_data,  {x: "t", y: "N", r: 1.2, fill: "#2980b9"})
+  ]
+})
+
+bif_plot = Plot.plot({
+  width: 410, height: 250,
+  x: {domain: [1, 4], label: "r", ticks: [1, 2, 3, 4]},
+  y: {domain: [0, 1], label: "Nₜ (attractor)"},
+  title: "Bifurcation diagram",
+  marks: [
+    Plot.dot(bif_arr,   {x: "r", y: "N", r: 0.5, fill: "#666", opacity: 0.25}),
+    Plot.ruleX([r_val], {stroke: "#e74c3c", strokeWidth: 2})
+  ]
+})
+
+html`<div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap">
+  <div>${ts_plot}</div>
+  <div>${bif_plot}</div>
+</div>`
+```
+:::
+
+::: {.content-visible when-format="pdf"}
+```{r}
+#| label: fig-logistic-bif-static
+#| fig-cap: "Bifurcation diagram of the logistic map. For each value of $r$, the attractor values of $N_t$ are plotted after discarding a 500-step transient. Interactive version: <<PUBLISHED URL>>#sec-logistic."
+#| echo: false
+plot_logistic_map_bif()
+```
+
+```{r}
+#| label: fig-logistic-ts-static
+#| fig-cap: "Logistic map dynamics $N_t$ starting from $N_0 = 0.5$ at four representative values of $r$, illustrating fixed-point, two-cycle, and chaotic regimes."
+#| echo: false
+plot_logistic_ts_facet()
+```
+:::
+
+

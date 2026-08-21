@@ -6,6 +6,41 @@ source("R/utils.R")
 
 theme_set(theme_classic(base_size = 12))
 
+# ---- helpers for life-table / Euler-Lotka ----
+
+.read_us_life_table_2020 <- function() {
+  readxl::read_xlsx("data/us_life_table_female_2020.xlsx", skip = 2,
+    col_names = c("age_range", "qx", "lx", "dx", "Lx", "Tx", "ex")) |>
+    filter(!is.na(lx), str_detect(age_range, "^[0-9]")) |>
+    mutate(age = as.integer(str_extract(age_range, "^[0-9]+")),
+           lx  = as.numeric(lx) / 100000) |>
+    select(age, lx)
+}
+
+.read_us_asfr_2018 <- function() {
+  midpoints <- c("15-19 Years" = 17.5, "20-24 Years" = 22.5,
+                 "25-29 Years" = 27.5, "30-34 Years" = 32.5,
+                 "35-39 Years" = 37.5, "40-44 Years" = 42.5,
+                 "45-49 Years" = 47.5)
+  read_csv("data/us_asfr.csv", show_col_types = FALSE) |>
+    filter(Year == 2018, `Age Group` %in% names(midpoints)) |>
+    mutate(age = midpoints[`Age Group`],
+           mx  = `Birth Rate` / 1000 * 0.4886) |>
+    select(age, mx)
+}
+
+compute_euler_lotka_us <- function() {
+  lt   <- .read_us_life_table_2020()
+  asfr <- .read_us_asfr_2018()
+  lx_i <- approx(lt$age, lt$lx, xout = asfr$age)$y
+  R0   <- sum(lx_i * asfr$mx) * 5
+  Tg   <- sum(asfr$age * lx_i * asfr$mx) / sum(lx_i * asfr$mx)
+  r_approx <- log(R0) / Tg
+  el <- function(r) sum(lx_i * asfr$mx * exp(-r * asfr$age)) * 5 - 1
+  r_exact <- uniroot(el, c(-0.5, 0.5))$root
+  list(R0 = R0, T = Tg, r_approx = r_approx, r_exact = r_exact)
+}
+
 fibonacci_seq <- function(n = 36) {
   R <- numeric(n)
   R[1] <- 1
@@ -68,6 +103,56 @@ plot_exponential_growth_linear <- function(t_max = 5, N0 = 1) {
                        name = NULL) +
     labs(x = expression(t), y = expression(N(t))) +
     theme(legend.position = c(0.88, 0.65))
+}
+
+plot_us_lx <- function() {
+  .read_us_life_table_2020() |>
+    ggplot(aes(age, lx)) +
+    geom_line(color = "#2980b9", linewidth = 0.9) +
+    scale_y_continuous(limits = c(0, 1)) +
+    labs(x = "Age (years)", y = expression(l[x]),
+         caption = "US females, 2020 (CDC NVSR 71-01)")
+}
+
+plot_us_mx <- function() {
+  .read_us_asfr_2018() |>
+    ggplot(aes(age, mx)) +
+    geom_col(fill = "#e67e22", width = 4.5) +
+    scale_x_continuous(breaks = seq(15, 50, by = 5), limits = c(12, 52)) +
+    labs(x = "Age (years)",
+         y = expression(m[x] ~ "(female births · female"^{-1} ~ "· yr"^{-1} * ")"),
+         caption = "US females, 2018 (CDC NCHS)")
+}
+
+plot_logistic_map_bif <- function(n_r = 600, n_burn = 500, n_keep = 120) {
+  r_vals <- seq(1, 4, length.out = n_r)
+  purrr::map_dfr(seq_len(n_r), function(idx) {
+    r <- r_vals[idx]; N <- 0.5
+    for (j in seq_len(n_burn)) N <- r * N * (1 - N)
+    Ns <- numeric(n_keep)
+    for (j in seq_len(n_keep)) { N <- r * N * (1 - N); Ns[j] <- N }
+    tibble(r = r, N = Ns)
+  }) |>
+    ggplot(aes(r, N)) +
+    geom_point(size = 0.05, alpha = 0.25, color = "#555555") +
+    scale_x_continuous(breaks = 1:4) +
+    scale_y_continuous(limits = c(0, 1)) +
+    labs(x = "r", y = expression(N[t] ~ "(attractor)"))
+}
+
+plot_logistic_ts_facet <- function(r_show = c(2.0, 3.2, 3.5, 3.9), n_ts = 60) {
+  purrr::map_dfr(r_show, function(r) {
+    Ns <- numeric(n_ts + 1L); Ns[1L] <- 0.5
+    for (t in seq_len(n_ts)) Ns[t + 1L] <- r * Ns[t] * (1 - Ns[t])
+    tibble(label = sprintf("r = %.1f", r), t = 0:n_ts, N = Ns)
+  }) |>
+    mutate(label = factor(label, levels = sprintf("r = %.1f", r_show))) |>
+    ggplot(aes(t, N)) +
+    geom_line(color = "#2980b9", linewidth = 0.6) +
+    geom_point(size = 0.4, color = "#2980b9") +
+    facet_wrap(~label, nrow = 1) +
+    scale_y_continuous(limits = c(0, 1)) +
+    labs(x = "t", y = expression(N[t]))
 }
 
 plot_iceman_c14 <- function() {

@@ -14,7 +14,7 @@ source("R/figures.R")
 
 ## Historical models: geometric growth
 
-Maybe the first example showing how growth can rapidly lead to large populations can be found in the *Liber abaci* (1202) by Leonardo Da Pisa, known as Fibonacci. 
+Among the first examples showing how growth can rapidly lead to large populations is an exercise found in the *Liber abaci* (1202) by Leonardo Da Pisa, known as Fibonacci. 
 
 > A certain man had one pair of rabbits together in a certain enclosed place, and one wishes to know how many are created from the pair in one year when it is the nature of them in a single month to bear another pair, and in the second month those born to bear also.
 
@@ -54,7 +54,7 @@ Because the numbers grow so rapidly, it is convenient to plot $\log R_t$ vs $t$
 plot_fibonacci_log()
 ```
 
-You can see that after some jiggling, the curve in the logarithmic scale approaches a line; this is because, for $n \gg 1$ we have 
+You can see that, after some jiggling, the curve in the logarithmic scale approaches a line; this is because, for $n \gg 1$ we have 
 
 $$
 R_t \approx \phi R_{t-1}
@@ -82,7 +82,7 @@ $$
 P_{t+1} = (1 + x) P_t
 $$
 
-with $x$ the annual increase of the population. Iterating:
+with $x$ representingthe annual increase of the population. Iterating:
 
 $$
 \begin{aligned}
@@ -138,7 +138,7 @@ Among the critics, Marx and Engels were among the most vitriolic. Engels describ
 
 > the crudest, most barbarous theory that ever existed, a system of despair which struck down all those beautiful phrases about love thy neighbour and world citizenship
 
-In the realm of biology, the *struggle for existence* implicit in the competition for scarce resources inspired the founders of evolution and provided a mechanism for natural selection. Darwin wrote in *The Origin of Species* (@darwin1859origin):
+In the realm of biology, the *struggle for existence* implicit in the competition for scarce resources inspired the founders of evolutionary theory, and provided a mechanism for natural selection. Darwin wrote in *The Origin of Species* (@darwin1859origin):
 
 > This is the doctrine of Malthus, applied with manifold force to the animal and vegetable kingdoms, for in this case there can be no artificial increase of food, and no prudential restraint from marriage
 
@@ -336,6 +336,68 @@ plot_iceman_c14()
 
 The weighted mean of $4546 \pm 17$ yr BP — years before present, where "present" is conventionally 1950 CE — places Ötzi's death between approximately 3350 and 3100 BCE, during the Copper Age.
 :::
+
+## Life tables, population pyramids and demographic transition
+
+In the model above, the growth of a population is determined by the per-capita growth rate $r$, which is the difference between the birth and death rates. However, there are different ways to achieve the same value of $r$. For example, a population with a high birth rate and a high death rate can have the same $r$ as a population with a low birth rate and a low death rate.
+
+Demographers use **life tables** to summarize the age-specific birth and death rates of a population.
+
+![The demographic transition: as countries develop, death rates fall first (reducing $r$ of mortality), then birth rates follow. Figure from Our World in Data / Wikimedia Commons.](images/demographic_transition.png){#fig-demographic-transition fig-align="center" width="90%"}
+
+### The Euler-Lotka equation
+
+To connect age-structured demography to the exponential growth model, we need two schedules:
+
+- $l_x$ — the **survival function**: the probability that a newborn female survives to exact age $x$ (by convention $l_0 = 1$).
+- $m_x$ — the **maternity function**: the expected number of female births produced per female per unit time at age $x$.
+
+The **net reproductive rate** $R_0$ is the mean number of daughters produced by a female over her lifetime:
+
+$$
+R_0 = \sum_x l_x \, m_x \cdot \Delta x
+$$
+
+where the sum runs over reproductive ages and $\Delta x$ is the width of each age interval. If $R_0 > 1$ the population grows on average; if $R_0 < 1$ it declines; $R_0 = 1$ gives exact replacement.
+
+The **Euler-Lotka equation** links the age-specific schedules to the intrinsic rate of increase $r$:
+
+$$
+1 = \sum_x l_x \, m_x \, e^{-r x} \cdot \Delta x
+$$ {#eq-euler-lotka}
+
+When $r = 0$, @eq-euler-lotka reduces to $R_0 = 1$. For $r \neq 0$, the exponential weight $e^{-rx}$ discounts (or inflates) contributions from late ages relative to early ones, so a population growing faster ($r > 0$) discounts late reproduction more heavily.
+
+A useful approximation is obtained by defining the **mean generation time** $T = \frac{\sum_x x \, l_x m_x}{\sum_x l_x m_x}$ and noting that $r \approx \frac{\log R_0}{T}$.
+
+The figures below show $l_x$ and $m_x$ for US females, using the 2020 CDC life table and 2018 age-specific fertility rates.
+
+```{r}
+#| label: fig-us-lx
+#| fig-cap: "Survival function $l_x$ for US females (CDC life table, 2020). The value at each age is the probability that a newborn survives to that age."
+#| echo: false
+plot_us_lx()
+```
+
+```{r}
+#| label: fig-us-mx
+#| fig-cap: "Maternity function $m_x$ for US females (CDC NCHS, 2018): female births per female per year, accounting for the sex ratio at birth ($\\approx 0.4886$ female)."
+#| echo: false
+plot_us_mx()
+```
+
+```{r}
+#| label: euler-lotka-us
+#| include: false
+el_us <- compute_euler_lotka_us()
+```
+
+Applying @eq-euler-lotka to the US data gives $R_0 = `r round(el_us$R0, 3)`$, a mean generation time of $T \approx `r round(el_us$T, 1)`$ years, and an intrinsic rate of increase of $r \approx `r round(el_us$r_exact, 4)`$ yr$^{-1}$. The negative $r$ reflects that US fertility has been below replacement ($R_0 < 1$) since the early 1970s — a pattern consistent with the demographic transition shown in @fig-demographic-transition.
+
+## Structured populations
+
+A key assumption of the exponential growth model is that all individuals are identical, and thus have the same birth and death rates. In reality, populations are structured by age, size, or stage of development, and these differences can have profound effects on population dynamics.
+
 
 
 
