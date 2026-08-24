@@ -28,6 +28,7 @@ book:
     - 04-predator_prey.qmd
 
 bibliography: references.bib
+reference-section-title: References
 
 format:
   html:
