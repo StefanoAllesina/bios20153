@@ -204,6 +204,172 @@ plot_human_population <- function() {
     theme(axis.text.x = element_text(angle = 45, hjust = 1))
 }
 
+plot_sir_diagram <- function() {
+  bw <- 1.4; bh <- 1.0; ay <- 2.0
+  xs <- c(1.0, 4.5, 8.0)
+  ggplot() +
+    annotate("rect", xmin=xs[1]-bw/2, xmax=xs[1]+bw/2, ymin=ay-bh/2, ymax=ay+bh/2,
+             fill="#ecf0f1", color="black", linewidth=0.6) +
+    annotate("text", x=xs[1], y=ay, label="S", size=7, fontface="bold") +
+    annotate("rect", xmin=xs[2]-bw/2, xmax=xs[2]+bw/2, ymin=ay-bh/2, ymax=ay+bh/2,
+             fill="#ecf0f1", color="black", linewidth=0.6) +
+    annotate("text", x=xs[2], y=ay, label="I", size=7, fontface="bold") +
+    annotate("rect", xmin=xs[3]-bw/2, xmax=xs[3]+bw/2, ymin=ay-bh/2, ymax=ay+bh/2,
+             fill="#ecf0f1", color="black", linewidth=0.6) +
+    annotate("text", x=xs[3], y=ay, label="R", size=7, fontface="bold") +
+    annotate("segment",
+             x=xs[1]+bw/2, xend=xs[2]-bw/2, y=ay, yend=ay,
+             arrow=arrow(length=unit(0.12,"in")), linewidth=0.7) +
+    annotate("text", x=(xs[1]+xs[2])/2, y=ay+0.42, label="β S I", size=4) +
+    annotate("segment",
+             x=xs[2]+bw/2, xend=xs[3]-bw/2, y=ay, yend=ay,
+             arrow=arrow(length=unit(0.12,"in")), linewidth=0.7) +
+    annotate("text", x=(xs[2]+xs[3])/2, y=ay+0.42, label="γ I", size=4) +
+    coord_cartesian(xlim=c(-0.2, 9.2), ylim=c(0.8, 3.2)) +
+    theme_void()
+}
+
+plot_sir_demography_diagram <- function() {
+  bw <- 1.4; bh <- 1.0; ay <- 2.0; dlen <- 0.85
+  xs <- c(1.0, 4.5, 8.0)
+  ggplot() +
+    annotate("segment",
+             x=-0.2, xend=xs[1]-bw/2, y=ay, yend=ay,
+             arrow=arrow(length=unit(0.12,"in")), linewidth=0.7) +
+    annotate("text", x=-0.1, y=ay+0.42, label="Λ", size=4, hjust=0) +
+    annotate("rect", xmin=xs[1]-bw/2, xmax=xs[1]+bw/2, ymin=ay-bh/2, ymax=ay+bh/2,
+             fill="#ecf0f1", color="black", linewidth=0.6) +
+    annotate("text", x=xs[1], y=ay, label="S", size=7, fontface="bold") +
+    annotate("rect", xmin=xs[2]-bw/2, xmax=xs[2]+bw/2, ymin=ay-bh/2, ymax=ay+bh/2,
+             fill="#ecf0f1", color="black", linewidth=0.6) +
+    annotate("text", x=xs[2], y=ay, label="I", size=7, fontface="bold") +
+    annotate("rect", xmin=xs[3]-bw/2, xmax=xs[3]+bw/2, ymin=ay-bh/2, ymax=ay+bh/2,
+             fill="#ecf0f1", color="black", linewidth=0.6) +
+    annotate("text", x=xs[3], y=ay, label="R", size=7, fontface="bold") +
+    annotate("segment",
+             x=xs[1]+bw/2, xend=xs[2]-bw/2, y=ay, yend=ay,
+             arrow=arrow(length=unit(0.12,"in")), linewidth=0.7) +
+    annotate("text", x=(xs[1]+xs[2])/2, y=ay+0.42, label="β S I", size=4) +
+    annotate("segment",
+             x=xs[2]+bw/2, xend=xs[3]-bw/2, y=ay, yend=ay,
+             arrow=arrow(length=unit(0.12,"in")), linewidth=0.7) +
+    annotate("text", x=(xs[2]+xs[3])/2, y=ay+0.42, label="γ I", size=4) +
+    annotate("segment", x=xs[1], xend=xs[1], y=ay-bh/2, yend=ay-bh/2-dlen,
+             arrow=arrow(length=unit(0.12,"in")), linewidth=0.7) +
+    annotate("text", x=xs[1]+0.3, y=ay-bh/2-dlen/2, label="μ S", size=3.8, hjust=0) +
+    annotate("segment", x=xs[2], xend=xs[2], y=ay-bh/2, yend=ay-bh/2-dlen,
+             arrow=arrow(length=unit(0.12,"in")), linewidth=0.7) +
+    annotate("text", x=xs[2]+0.3, y=ay-bh/2-dlen/2, label="μ I", size=3.8, hjust=0) +
+    annotate("segment", x=xs[3], xend=xs[3], y=ay-bh/2, yend=ay-bh/2-dlen,
+             arrow=arrow(length=unit(0.12,"in")), linewidth=0.7) +
+    annotate("text", x=xs[3]+0.3, y=ay-bh/2-dlen/2, label="μ R", size=3.8, hjust=0) +
+    coord_cartesian(xlim=c(-0.5, 9.5), ylim=c(0.0, 3.2)) +
+    theme_void()
+}
+
+plot_sis_diagram <- function() {
+  bw <- 1.6; bh <- 1.0; ay <- 2.0; off <- 0.22
+  xs <- c(2.0, 7.0)
+  mid <- (xs[1] + xs[2]) / 2
+  ggplot() +
+    annotate("rect", xmin=xs[1]-bw/2, xmax=xs[1]+bw/2, ymin=ay-bh/2, ymax=ay+bh/2,
+             fill="#ecf0f1", color="black", linewidth=0.6) +
+    annotate("text", x=xs[1], y=ay, label="S", size=7, fontface="bold") +
+    annotate("rect", xmin=xs[2]-bw/2, xmax=xs[2]+bw/2, ymin=ay-bh/2, ymax=ay+bh/2,
+             fill="#ecf0f1", color="black", linewidth=0.6) +
+    annotate("text", x=xs[2], y=ay, label="I", size=7, fontface="bold") +
+    annotate("segment",
+             x=xs[1]+bw/2, xend=xs[2]-bw/2, y=ay+off, yend=ay+off,
+             arrow=arrow(length=unit(0.12,"in")), linewidth=0.7) +
+    annotate("text", x=mid, y=ay+off+0.38, label="β S I", size=4) +
+    annotate("segment",
+             x=xs[2]-bw/2, xend=xs[1]+bw/2, y=ay-off, yend=ay-off,
+             arrow=arrow(length=unit(0.12,"in")), linewidth=0.7) +
+    annotate("text", x=mid, y=ay-off-0.38, label="γ I", size=4) +
+    coord_cartesian(xlim=c(0.5, 8.5), ylim=c(0.8, 3.2)) +
+    theme_void()
+}
+
+plot_seir_diagram <- function() {
+  bw <- 1.2; bh <- 1.0; ay <- 1.8
+  xs <- c(1.0, 3.5, 6.0, 8.5)
+  ggplot() +
+    annotate("rect", xmin=xs[1]-bw/2, xmax=xs[1]+bw/2, ymin=ay-bh/2, ymax=ay+bh/2,
+             fill="#ecf0f1", color="black", linewidth=0.6) +
+    annotate("text", x=xs[1], y=ay, label="S", size=6, fontface="bold") +
+    annotate("rect", xmin=xs[2]-bw/2, xmax=xs[2]+bw/2, ymin=ay-bh/2, ymax=ay+bh/2,
+             fill="#ecf0f1", color="black", linewidth=0.6) +
+    annotate("text", x=xs[2], y=ay, label="E", size=6, fontface="bold") +
+    annotate("rect", xmin=xs[3]-bw/2, xmax=xs[3]+bw/2, ymin=ay-bh/2, ymax=ay+bh/2,
+             fill="#ecf0f1", color="black", linewidth=0.6) +
+    annotate("text", x=xs[3], y=ay, label="I", size=6, fontface="bold") +
+    annotate("rect", xmin=xs[4]-bw/2, xmax=xs[4]+bw/2, ymin=ay-bh/2, ymax=ay+bh/2,
+             fill="#ecf0f1", color="black", linewidth=0.6) +
+    annotate("text", x=xs[4], y=ay, label="R", size=6, fontface="bold") +
+    annotate("segment",
+             x=xs[1]+bw/2, xend=xs[2]-bw/2, y=ay, yend=ay,
+             arrow=arrow(length=unit(0.12,"in")), linewidth=0.7) +
+    annotate("text", x=(xs[1]+xs[2])/2, y=ay+0.4, label="β S I", size=3.5) +
+    annotate("segment",
+             x=xs[2]+bw/2, xend=xs[3]-bw/2, y=ay, yend=ay,
+             arrow=arrow(length=unit(0.12,"in")), linewidth=0.7) +
+    annotate("text", x=(xs[2]+xs[3])/2, y=ay+0.4, label="σ E", size=3.5) +
+    annotate("segment",
+             x=xs[3]+bw/2, xend=xs[4]-bw/2, y=ay, yend=ay,
+             arrow=arrow(length=unit(0.12,"in")), linewidth=0.7) +
+    annotate("text", x=(xs[3]+xs[4])/2, y=ay+0.4, label="γ I", size=3.5) +
+    annotate("curve",
+             x=xs[4], xend=xs[1], y=ay+bh/2, yend=ay+bh/2,
+             curvature=0.4,
+             arrow=arrow(length=unit(0.12,"in")), linewidth=0.7) +
+    annotate("text", x=(xs[1]+xs[4])/2, y=ay+bh/2+1.0, label="δ R", size=3.5) +
+    coord_cartesian(xlim=c(0, 9.5), ylim=c(0.6, 3.8)) +
+    theme_void()
+}
+
+plot_sir_dynamics_static <- function(
+    S0_show = c(0.25, 0.65, 0.95),
+    beta = 2, gamma = 1, I0 = 0.01,
+    t_max = 20, dt = 0.05
+) {
+  sir_ode <- function(S0) {
+    n  <- as.integer(t_max / dt)
+    Sv <- Iv <- Rv <- numeric(n + 1L)
+    Sv[1] <- S0; Iv[1] <- I0; Rv[1] <- 1 - S0 - I0
+    dv <- function(s, i) c(-beta*s*i, beta*s*i - gamma*i, gamma*i)
+    for (k in seq_len(n)) {
+      y  <- c(Sv[k], Iv[k], Rv[k])
+      k1 <- dv(y[1], y[2])
+      k2 <- dv((y + dt/2*k1)[1], (y + dt/2*k1)[2])
+      k3 <- dv((y + dt/2*k2)[1], (y + dt/2*k2)[2])
+      k4 <- dv((y + dt*k3)[1],   (y + dt*k3)[2])
+      yn  <- pmax(y + dt/6*(k1 + 2*k2 + 2*k3 + k4), 0)
+      Sv[k+1] <- yn[1]; Iv[k+1] <- yn[2]; Rv[k+1] <- yn[3]
+    }
+    data.frame(t = seq(0, t_max, by = dt), S = Sv, I = Iv, R = Rv)
+  }
+
+  purrr::map_dfr(S0_show, function(S0) {
+    sir_ode(S0) |>
+      pivot_longer(c(S, I, R), names_to = "compartment", values_to = "value") |>
+      mutate(S0_label = paste0("S[0] == ", S0))
+  }) |>
+    mutate(
+      S0_label    = factor(S0_label, levels = paste0("S[0] == ", sort(S0_show))),
+      compartment = factor(compartment, levels = c("S", "I", "R"))
+    ) |>
+    ggplot(aes(t, value, color = compartment)) +
+    geom_line(linewidth = 0.8) +
+    facet_wrap(~S0_label, nrow = 1, labeller = label_parsed) +
+    scale_color_manual(
+      values = c(S = "#2980b9", I = "#e74c3c", R = "#27ae60"),
+      name = NULL
+    ) +
+    scale_y_continuous(limits = c(0, 1)) +
+    labs(x = expression(t), y = "Proportion") +
+    theme(legend.position = "bottom")
+}
+
 plot_births_by_day <- function() {
   holidays <- tribble(
     ~month, ~dom, ~label,

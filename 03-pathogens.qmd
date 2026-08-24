@@ -12,3 +12,253 @@ source("R/figures.R")
 ## Overview {#sec-topic3-overview}
 
 <!-- Chapter content goes here -->
+
+## Compartmental models
+
+Simple models for the spread of infectious diseases are often based on the idea of **compartments**. Individuals in a population are classified into different compartments based on their disease status, and the model describes how individuals move between compartments over time.
+
+Common compartments include: Susceptible (available for infection, $S$), Infected (and infectious!, $I$), and Recovered (or removed, $R$). The dynamics of the disease can be described using differential equations that govern the rates of change between these compartments.
+
+In most cases, one considers the total population fixed (the dynamics of the disease are rapid compared to the dynamics of the population), so that $S + I + R = N$ is constant, and $N=1$ without loss of generality (i.e., compartments represent the proportion of the population in each state). The simplest model is the **SIR model**, which assumes that individuals move from being susceptible to infected, and then to recovered. This model was proposed by Kermack and McKendrick in 1927, and is still widely used today, despite being exactly a century old! 
+
+Many variations on this basic framework exist, including models that account for births and deaths, vaccination, waning immunity, and more. The SIR model is a foundational tool in epidemiology and provides insights into the dynamics of infectious diseases.
+
+## Susceptible-Infected-Recovered (SIR) model
+
+The population is divided into three compartments: Susceptible ($S$), Infected ($I$), and Recovered ($R$). Susceptible individuals can become infected upon contact with infected individuals, and infected individuals can recover from the disease, thereby gaining long-lasting immunity. The model is best understood using boxes and arrows to represent the flow of individuals between compartments:
+
+```{r}
+#| label: fig-sir-diagram
+#| echo: false
+#| fig-height: 2.5
+#| fig-cap: "Flow diagram of the SIR model. Susceptible individuals ($S$) become infected at rate $\\beta S I$ upon contact with infectious individuals ($I$), who recover at rate $\\gamma I$."
+plot_sir_diagram()
+```
+
+The dynamics of the SIR model can be described by the following set of ordinary differential equations (ODEs):
+
+$$
+\begin{aligned}
+\frac{dS}{dt} &= -\beta S I\\
+\frac{dI}{dt} &= \beta S I - \gamma I\\
+\frac{dR}{dt} &= \gamma I
+\end{aligned}
+$$
+
+The dynamics of this model are governed by two key parameters: the transmission rate $\beta$ and the recovery rate $\gamma$. $\beta$ can be thought of as the rate at which susceptible individuals become infected upon contact with infectious individuals, while $\gamma$ is the rate at which infected individuals recover and move to the recovered compartment (for example, the reciprocal of the average infectious period). The trajectories of the compartments cannot be solved analytically in general, but can be simulated numerically. However, we can make sense of the dynamics by considering that a) the number of susceptible individuals can only decrease over time, and b) the number of infected individuals can increase or decrease depending on the relative sizes of the susceptible and infected compartments. In particular:
+
+$$
+\frac{1}{I} \frac{dI}{dt} = \beta S - \gamma
+$$
+
+and thus the number of infected individuals will increase when $\beta S/\gamma > 1$. Suppose that the population is initially entirely susceptible, so that $S \approx 1$. Then the condition for the number of infected individuals to increase is $\beta/\gamma > 1$, which leads to the concept of the **basic reproduction number** $R_0 = \beta / \gamma$, which determines whether an infection will spread in a population. If $R_0 > 1$, the infection can invade and cause an epidemic; if $R_0 < 1$, the infection will die out. This quantity can be interpreted as the average number of secondary infections produced by a single infected individual in a completely susceptible population. The basic reproduction number is a fundamental concept in epidemiology and is used to assess the potential for disease outbreaks and to inform public health interventions.
+
+With these qualitiative insights, we can now explore the dynamics of the SIR model in more detail, including the effects of varying parameters and initial conditions on the spread of infectious diseases. 
+
+### Dynamics of the SIR model {#sec-topic3-sir-dynamics}
+
+```{r}
+#| label: sir-dynamics-grid
+#| include: false
+# Precompute SIR trajectories and phase-plane vector field for the OJS widget.
+# Parameters: beta = 2, gamma = 1 (R0 = 2); I0 fixed at 0.01.
+# S0 ranges from 0.01 to 0.99 in steps of 0.01 (indices 1–99).
+sir_beta <- 2; sir_gamma <- 1; sir_I0 <- 0.01
+sir_t_max <- 20; sir_dt <- 0.05; sir_store <- 5L  # store every 5th step (dt = 0.25)
+
+.sir_rk4 <- function(S0) {
+  n  <- as.integer(sir_t_max / sir_dt)
+  Sv <- Iv <- Rv <- numeric(n + 1L)
+  Sv[1] <- S0; Iv[1] <- sir_I0; Rv[1] <- 1 - S0 - sir_I0
+  dv <- function(s, i) c(-sir_beta*s*i, sir_beta*s*i - sir_gamma*i, sir_gamma*i)
+  for (k in seq_len(n)) {
+    y  <- c(Sv[k], Iv[k], Rv[k])
+    k1 <- dv(y[1], y[2])
+    k2 <- dv((y + sir_dt/2*k1)[1], (y + sir_dt/2*k1)[2])
+    k3 <- dv((y + sir_dt/2*k2)[1], (y + sir_dt/2*k2)[2])
+    k4 <- dv((y + sir_dt*k3)[1],   (y + sir_dt*k3)[2])
+    yn  <- pmax(y + sir_dt/6*(k1 + 2*k2 + 2*k3 + k4), 0)
+    Sv[k+1] <- yn[1]; Iv[k+1] <- yn[2]; Rv[k+1] <- yn[3]
+  }
+  idx <- seq(1L, n + 1L, by = sir_store)
+  data.frame(t = seq(0, sir_t_max, by = sir_dt)[idx],
+             S = Sv[idx], I = Iv[idx], R = Rv[idx])
+}
+
+sir_S0_vals <- seq(0.01, 0.99, by = 0.01)
+sir_traj <- do.call(rbind, lapply(seq_along(sir_S0_vals), function(i) {
+  cbind(i = i, .sir_rk4(sir_S0_vals[i]))
+}))
+
+# Vector field for phase plane.
+# Phase-plane panel: width = 360 px, height = 290 px, x in [0,1], y in [0,0.3].
+# Pixel-per-data-unit: x → 360, y → 967. Scale factors (0.035, 0.012) give
+# approximately equal pixel arrow lengths for all directions.
+sir_vf_S <- seq(0.05, 0.95, length.out = 13)
+sir_vf_I <- seq(0.01, 0.27, length.out = 13)
+
+sir_vfield <- do.call(rbind, Filter(Negate(is.null), lapply(sir_vf_S, function(Sv) {
+  do.call(rbind, Filter(Negate(is.null), lapply(sir_vf_I, function(Iv) {
+    if (Sv + Iv > 0.99) return(NULL)
+    dS <- -sir_beta * Sv * Iv
+    dI <-  sir_beta * Sv * Iv - sir_gamma * Iv
+    len <- sqrt(dS^2 + dI^2)
+    data.frame(S = Sv, I = Iv,
+               S2 = Sv + dS/len * 0.035,
+               I2 = Iv + dI/len * 0.012)
+  })))
+})))
+
+ojs_define(sir_traj = sir_traj, sir_vfield = sir_vfield)
+```
+
+::: {.content-visible when-format="html"}
+```{ojs}
+viewof sir_i = Inputs.range([1, 99], {step: 1, value: 99,
+  label: "Initial susceptible S₀"})
+
+{
+  const S0    = sir_i / 100;
+  const Rinit = (1 - S0 - 0.01).toFixed(2);
+  const rows  = transpose(sir_traj).filter(d => d.i === sir_i);
+  const vf    = transpose(sir_vfield);
+
+  const tlong = rows.flatMap(d => [
+    {t: d.t, comp: "S", val: d.S},
+    {t: d.t, comp: "I", val: d.I},
+    {t: d.t, comp: "R", val: d.R}
+  ]);
+
+  const pal = {domain: ["S","I","R"], range: ["#2980b9","#e74c3c","#27ae60"]};
+
+  const lp = Plot.plot({
+    width: 360, height: 290,
+    x: {label: "Time (t)"},
+    y: {label: "Proportion", domain: [0, 1]},
+    color: {...pal, legend: true},
+    marks: [
+      Plot.line(tlong, {x: "t", y: "val", stroke: "comp", strokeWidth: 2})
+    ]
+  });
+
+  const rp = Plot.plot({
+    width: 360, height: 290,
+    x: {label: "Susceptible (S)", domain: [0, 1]},
+    y: {label: "Infected (I)",    domain: [0, 0.3]},
+    marks: [
+      Plot.arrow(vf, {x1:"S", y1:"I", x2:"S2", y2:"I2",
+        stroke:"#ccc", strokeWidth:0.8, headLength:4}),
+      Plot.ruleX([0.5], {stroke:"#e67e22", strokeDasharray:"5,3", strokeWidth:1.2}),
+      Plot.line(rows, {x:"S", y:"I", stroke:"#444", strokeWidth:2}),
+      Plot.dot([{S: S0, I: 0.01}], {x:"S", y:"I", r:5, fill:"#444"})
+    ]
+  });
+
+  return html`<div>
+    <p style="font-size:0.87em;margin:0 0 5px">
+      <strong>S₀ = ${S0.toFixed(2)}</strong>, I₀ = 0.01,
+      initial recovered = ${Rinit};&ensp;β = 2, γ = 1
+    </p>
+    <div style="display:flex;gap:8px;align-items:flex-start">${lp}${rp}</div>
+    <p style="font-size:0.82em;color:#666;margin:4px 0 0">
+      Orange dashed line: herd immunity threshold S = γ/β = 0.5.
+      Filled dot marks the initial state; trajectory moves leftward as S decreases.
+    </p>
+  </div>`;
+}
+```
+:::
+
+::: {.content-visible when-format="pdf"}
+```{r}
+#| label: fig-sir-dynamics-static
+#| echo: false
+#| fig-height: 3.5
+#| fig-cap: "SIR model dynamics for three initial susceptible fractions ($S_0 = 0.25, 0.65, 0.95$), with $I_0 = 0.01$, $\\beta = 2$, $\\gamma = 1$ ($\\mathcal{R}_0 = 2$). When $S_0 < \\gamma/\\beta = 0.5$ the infection dies out immediately; when $S_0 > 0.5$ an epidemic develops. Interactive version: https://your-course-site#sec-topic3-sir-dynamics."
+plot_sir_dynamics_static()
+```
+:::
+
+## Number of people experiencing infection over time
+
+Derive the S(\infty) and approximate the final size of the epidemic.
+
+## Vaccination
+
+Explain how vaccination can be incorporated into the SIR model, and how it affects the dynamics of disease spread. Discuss herd immunity and the critical vaccination threshold.
+
+
+here it would be good to have a timeline for the eradication of smallpox and the near eradication of polio
+
+For measles, it would be interesting to show the recent resurgence of measles in the US and Europe, and how this is related to vaccination rates. This has become especially pressing in the US
+
+
+
+
+
+
+## Other compartmental models
+
+A common variation on the SIR model is the inclusiong of demography. Newborns enter the population as susceptible individuals, and all individuals experience a natural death rate. This leads to the **SIR model with demography**, which can be described by the following set of ODEs:
+
+```{r}
+#| label: fig-sir-demography-diagram
+#| echo: false
+#| fig-height: 2.5
+#| fig-cap: "SIR model with demography. Newborns enter the susceptible class at constant rate $\\Lambda$; all compartments experience natural mortality at per-capita rate $\\mu$."
+plot_sir_demography_diagram()
+```
+
+
+$$
+\begin{aligned}
+\frac{dS}{dt} &= \Lambda - \beta S I - \mu S\\
+\frac{dI}{dt} &= \beta S I - \gamma I - \mu I\\
+\frac{dR}{dt} &= \gamma I - \mu R
+\end{aligned}
+$$
+
+In this model if $\Lambda = \mu$, the total population size remains constant, and the dynamics of the disease are similar to those of the basic SIR model. However, if $\Lambda > \mu$, the population grows over time, while if $\Lambda < \mu$, the population declines.
+
+A simpler version of the model is the **SIS model**, which assumes that individuals do not gain long-lasting immunity after infection. In this case, individuals move from the Susceptible compartment to the Infected compartment and back again, without ever entering the Recovered compartment. The dynamics of the SIS model can be described by the following set of ODEs:
+
+```{r}
+#| label: fig-sis-diagram
+#| echo: false
+#| fig-height: 2.5
+#| fig-cap: "Flow diagram of the SIS model. Recovered individuals return immediately to the susceptible class at rate $\\gamma I$, conferring no lasting immunity."
+plot_sis_diagram()
+```
+
+$$
+\begin{aligned}
+\frac{dS}{dt} &= -\beta S I + \gamma I\\
+\frac{dI}{dt} &= \beta S I - \gamma I
+\end{aligned}
+$$
+
+For diseases that do not confer long-lasting immunity, individuals may move from the Recovered compartment back to the Susceptible compartment. This leads to the **SIRS model**, which includes a waning immunity term. Other models may include additional compartments, such as Exposed (E) for diseases with a latent period, leading to the SEIR model, leading to the follwing set of ODEs:
+
+```{r}
+#| label: fig-seir-diagram
+#| echo: false
+#| fig-height: 2.8
+#| fig-cap: "SEIR model with waning immunity. Exposed individuals ($E$) progress to infectious at rate $\\sigma E$; recovered individuals ($R$) lose immunity and re-enter the susceptible class at rate $\\delta R$."
+plot_seir_diagram()
+```
+
+$$
+\begin{aligned}
+\frac{dS}{dt} &= -\beta S I + \delta R\\
+\frac{dE}{dt} &= \beta S I - \sigma E\\
+\frac{dI}{dt} &= \sigma E - \gamma I\\
+\frac{dR}{dt} &= \gamma I - \delta R
+\end{aligned}
+$$
+
+
+You can find more complex models in which some compartments represent a disease vector (e.g., mosquitoes) or a pathogen (e.g., free-living bacteria) in the environment. These models are often referred to as **vector-borne** or **environmental transmission** models, respectively. While the number of compartments and the complexity of the models can vary widely, the basic principles of compartmental modeling remain the same: individuals move between compartments based on rates that depend on the current state of the system. 
+
+@fig-zika-model shows a more complex example from @roosa2019identifiability: a model of **Zika virus transmission** that couples two interacting populations — humans and mosquitoes. The human population is divided into susceptible ($S_h$), exposed ($E_h$), asymptomatically infectious ($A_h$), symptomatically infectious ($I_{h1}$), convalescent ($I_{h2}$), and recovered ($R_h$) classes. Mosquitoes are divided into susceptible ($S_v$), exposed ($E_v$), and infectious ($I_v$) classes. Transmission is bidirectional: infectious mosquitoes ($I_v$) infect susceptible humans ($S_h$), and infectious humans ($A_h$, $I_{h1}$) infect susceptible mosquitoes ($S_v$).
+
+![Compartmental diagram for the Zika virus transmission model of @roosa2019identifiability. The human population (top) is divided into six classes; the mosquito (vector) population (dark blue outline) into three. Arrows are labelled with the rates governing transitions between compartments.](images/zika_roosa2019_fig4.jpg){#fig-zika-model} 
