@@ -60,56 +60,8 @@ With these qualitiative insights, we can now explore the dynamics of the SIR mod
 ```{r}
 #| label: sir-dynamics-grid
 #| include: false
-# Precompute SIR trajectories and phase-plane vector field for the OJS widget.
-# Parameters: beta = 2, gamma = 1 (R0 = 2); I0 fixed at 0.01.
-# S0 ranges from 0.01 to 0.99 in steps of 0.01 (indices 1–99).
-sir_beta <- 2; sir_gamma <- 1; sir_I0 <- 0.01
-sir_t_max <- 20; sir_dt <- 0.05; sir_store <- 5L  # store every 5th step (dt = 0.25)
-
-.sir_rk4 <- function(S0) {
-  n  <- as.integer(sir_t_max / sir_dt)
-  Sv <- Iv <- Rv <- numeric(n + 1L)
-  Sv[1] <- S0; Iv[1] <- sir_I0; Rv[1] <- 1 - S0 - sir_I0
-  dv <- function(s, i) c(-sir_beta*s*i, sir_beta*s*i - sir_gamma*i, sir_gamma*i)
-  for (k in seq_len(n)) {
-    y  <- c(Sv[k], Iv[k], Rv[k])
-    k1 <- dv(y[1], y[2])
-    k2 <- dv((y + sir_dt/2*k1)[1], (y + sir_dt/2*k1)[2])
-    k3 <- dv((y + sir_dt/2*k2)[1], (y + sir_dt/2*k2)[2])
-    k4 <- dv((y + sir_dt*k3)[1],   (y + sir_dt*k3)[2])
-    yn  <- pmax(y + sir_dt/6*(k1 + 2*k2 + 2*k3 + k4), 0)
-    Sv[k+1] <- yn[1]; Iv[k+1] <- yn[2]; Rv[k+1] <- yn[3]
-  }
-  idx <- seq(1L, n + 1L, by = sir_store)
-  data.frame(t = seq(0, sir_t_max, by = sir_dt)[idx],
-             S = Sv[idx], I = Iv[idx], R = Rv[idx])
-}
-
-sir_S0_vals <- seq(0.01, 0.99, by = 0.01)
-sir_traj <- do.call(rbind, lapply(seq_along(sir_S0_vals), function(i) {
-  cbind(i = i, .sir_rk4(sir_S0_vals[i]))
-}))
-
-# Vector field for phase plane.
-# Phase-plane panel: width = 360 px, height = 290 px, x in [0,1], y in [0,0.3].
-# Pixel-per-data-unit: x → 360, y → 967. Scale factors (0.035, 0.012) give
-# approximately equal pixel arrow lengths for all directions.
-sir_vf_S <- seq(0.05, 0.95, length.out = 13)
-sir_vf_I <- seq(0.01, 0.27, length.out = 13)
-
-sir_vfield <- do.call(rbind, Filter(Negate(is.null), lapply(sir_vf_S, function(Sv) {
-  do.call(rbind, Filter(Negate(is.null), lapply(sir_vf_I, function(Iv) {
-    if (Sv + Iv > 0.99) return(NULL)
-    dS <- -sir_beta * Sv * Iv
-    dI <-  sir_beta * Sv * Iv - sir_gamma * Iv
-    len <- sqrt(dS^2 + dI^2)
-    data.frame(S = Sv, I = Iv,
-               S2 = Sv + dS/len * 0.035,
-               I2 = Iv + dI/len * 0.012)
-  })))
-})))
-
-ojs_define(sir_traj = sir_traj, sir_vfield = sir_vfield)
+sir_grid <- .sir_dynamics_grid()
+ojs_define(sir_traj = sir_grid$traj, sir_vfield = sir_grid$vfield)
 ```
 
 ::: {.content-visible when-format="html"}

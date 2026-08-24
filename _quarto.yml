@@ -8,6 +8,19 @@ book:
   author: "Stefano Allesina"
   date: today
   downloads: [pdf]
+  sidebar: false
+  navbar:
+    left:
+      - text: "Home"
+        href: index.html
+      - text: "1. Unbounded Growth"
+        href: 01-unbounded.html
+      - text: "2. Density Dependence"
+        href: 02-density_dependence.html
+      - text: "3. Pathogens"
+        href: 03-pathogens.html
+      - text: "4. Predator-Prey"
+        href: 04-predator_prey.html
   chapters:
     - index.qmd
     - 01-unbounded.qmd
@@ -22,6 +35,7 @@ format:
     theme: [flatly, custom.scss]
     number-sections: true
     code-fold: false
+    toc: false
   pdf:
     documentclass: scrbook
     number-sections: true

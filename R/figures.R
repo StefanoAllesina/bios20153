@@ -327,6 +327,55 @@ plot_seir_diagram <- function() {
     theme_void()
 }
 
+.sir_dynamics_grid <- function(
+    beta = 2, gamma = 1, I0 = 0.01,
+    t_max = 20, dt = 0.05, store = 5L,
+    n_vf = 13, arr_s = 0.035, arr_i = 0.012
+) {
+  rk4 <- function(S0) {
+    n  <- as.integer(t_max / dt)
+    Sv <- Iv <- Rv <- numeric(n + 1L)
+    Sv[1] <- S0; Iv[1] <- I0; Rv[1] <- 1 - S0 - I0
+    dv <- function(s, i) c(-beta*s*i, beta*s*i - gamma*i, gamma*i)
+    for (k in seq_len(n)) {
+      y  <- c(Sv[k], Iv[k], Rv[k])
+      k1 <- dv(y[1], y[2])
+      k2 <- dv((y + dt/2*k1)[1], (y + dt/2*k1)[2])
+      k3 <- dv((y + dt/2*k2)[1], (y + dt/2*k2)[2])
+      k4 <- dv((y + dt*k3)[1],   (y + dt*k3)[2])
+      yn  <- pmax(y + dt/6*(k1 + 2*k2 + 2*k3 + k4), 0)
+      Sv[k+1] <- yn[1]; Iv[k+1] <- yn[2]; Rv[k+1] <- yn[3]
+    }
+    idx <- seq(1L, n + 1L, by = store)
+    data.frame(t = seq(0, t_max, by = dt)[idx],
+               S = Sv[idx], I = Iv[idx], R = Rv[idx])
+  }
+
+  S0_vals <- seq(0.01, 0.99, by = 0.01)
+  traj <- do.call(rbind, lapply(seq_along(S0_vals), function(i) {
+    cbind(i = i, rk4(S0_vals[i]))
+  }))
+
+  # Normalize arrows accounting for the panel's aspect ratio:
+  # width=360 px, x in [0,1]; height=290 px, y in [0,0.3].
+  # arr_s/arr_i chosen so all arrow directions render ~12 px long.
+  vf_S <- seq(0.05, 0.95, length.out = n_vf)
+  vf_I <- seq(0.01, 0.27, length.out = n_vf)
+  vfield <- do.call(rbind, Filter(Negate(is.null), lapply(vf_S, function(Sv) {
+    do.call(rbind, Filter(Negate(is.null), lapply(vf_I, function(Iv) {
+      if (Sv + Iv > 0.99) return(NULL)
+      dS <- -beta * Sv * Iv
+      dI <-  beta * Sv * Iv - gamma * Iv
+      len <- sqrt(dS^2 + dI^2)
+      data.frame(S = Sv, I = Iv,
+                 S2 = Sv + dS/len * arr_s,
+                 I2 = Iv + dI/len * arr_i)
+    })))
+  })))
+
+  list(traj = traj, vfield = vfield)
+}
+
 plot_sir_dynamics_static <- function(
     S0_show = c(0.25, 0.65, 0.95),
     beta = 2, gamma = 1, I0 = 0.01,
