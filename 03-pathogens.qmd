@@ -133,7 +133,31 @@ plot_sir_dynamics_static()
 
 ## Number of people experiencing infection over time
 
-Derive the S(\infty) and approximate the final size of the epidemic.
+The SIR model cannot be solved analytically, but we can determine what fraction of the population was infected over the entire course of an epidemic — the **final attack rate** — without integrating the differential equations. As $t \to \infty$ the epidemic subsides: $I(\infty) = 0$, so all individuals are either susceptible or recovered, and $S(\infty) + R(\infty) = 1$.
+
+To find $S(\infty)$, we eliminate time from the ODEs by computing
+
+$$
+\frac{dS}{dR} = \frac{dS/dt}{dR/dt} = \frac{-\beta S I}{\gamma I} = -\frac{\beta}{\gamma} S = -R_0 \, S.
+$$
+
+This separable equation integrates to $S(t) = S_0 \exp(-R_0 (R(t) - R(0)))$. Starting from a nearly fully susceptible population ($S_0 \approx 1$, $R(0) = 0$), and taking $t \to \infty$ with $R(\infty) = 1 - S(\infty)$, we obtain the **final size relation**:
+
+$$
+S(\infty) = \exp\!\bigl(-R_0 \,(1 - S(\infty))\bigr).
+$$ {#eq-sir-final-size}
+
+This is a fixed-point equation: the right-hand side depends on $S(\infty)$ itself, so it cannot be solved algebraically. It can, however, be solved numerically for any given $R_0$. The final attack rate $1 - S(\infty)$ is plotted as a function of $R_0$ in @fig-sir-final-size.
+
+```{r}
+#| label: fig-sir-final-size
+#| echo: false
+#| fig-height: 3.5
+#| fig-cap: "Final attack rate $1 - S(\\infty)$ as a function of $R_0$, obtained by solving @eq-sir-final-size numerically. Below the epidemic threshold $R_0 = 1$ (red dashed line) the infection always dies out; above it a non-zero fraction of the population is infected. For $R_0 = 2$, approximately 80% of a fully susceptible population is eventually infected before the epidemic ends."
+plot_sir_final_size()
+```
+
+A striking feature of @eq-sir-final-size is that the final attack rate is entirely determined by $R_0$, regardless of the individual values of $\beta$ and $\gamma$. Two diseases with different transmission and recovery rates but the same $R_0$ will infect the same total fraction of the population — even though their time courses may look very different.
 
 ## Vaccination
 

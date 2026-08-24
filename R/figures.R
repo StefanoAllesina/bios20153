@@ -376,6 +376,22 @@ plot_seir_diagram <- function() {
   list(traj = traj, vfield = vfield)
 }
 
+plot_sir_final_size <- function(R0_max = 5) {
+  final_z <- function(R0) {
+    if (R0 <= 1) return(0)
+    uniroot(function(z) z - 1 + exp(-R0 * z), c(1e-8, 1 - 1e-8))$root
+  }
+  R0_vals <- seq(0.5, R0_max, length.out = 400)
+  tibble(R0 = R0_vals, z = vapply(R0_vals, final_z, numeric(1))) |>
+    ggplot(aes(R0, z)) +
+    geom_vline(xintercept = 1, linetype = "dashed", color = "#e74c3c",
+               linewidth = 0.7) +
+    geom_line(linewidth = 0.9, color = "#2980b9") +
+    scale_x_continuous(breaks = 1:R0_max) +
+    scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.25)) +
+    labs(x = expression(R[0]), y = "Final attack rate")
+}
+
 plot_sir_dynamics_static <- function(
     S0_show = c(0.25, 0.65, 0.95),
     beta = 2, gamma = 1, I0 = 0.01,
