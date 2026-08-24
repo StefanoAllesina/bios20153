@@ -1,18 +1,22 @@
 /*-- scss:rules --*/
 
-/* Always show the chapter navigation sidebar — no hamburger needed */
-@media (max-width: 991.98px) {
-  #quarto-sidebar {
-    display: block !important;
-    position: relative !important;
-    width: 250px !important;
-  }
+/* Hide the chapter-list sidebar; chapters navigate via the top navbar */
+#quarto-sidebar,
+#quarto-sidebar-glass,
+.quarto-sidebar-toggle-button,
+.quarto-btn-toggle {
+  display: none !important;
+}
 
-  .quarto-sidebar-toggle-button {
-    display: none !important;
-  }
-
-  #quarto-content {
-    padding-left: 0 !important;
-  }
+/* Collapse the sidebar grid column and let the body fill the space */
+.page-columns {
+  grid-template-columns:
+    [screen-start] 1.5em
+    [screen-start-inset page-start] 5fr
+    [body-start-outset] 35px
+    [body-start] 1.5em
+    [body-content-start] minmax(500px, 1100px)
+    [body-content-end] 1.5em
+    [body-end body-end-outset page-end-inset page-end] 5fr
+    [screen-end] 1.5em !important;
 }

@@ -8,7 +8,6 @@ book:
   author: "Stefano Allesina"
   date: today
   downloads: [pdf]
-  sidebar: false
   navbar:
     left:
       - text: "Home"
