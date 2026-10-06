@@ -286,7 +286,7 @@ window.Quarto = {
 <section id="compartmental-models" class="level2" data-number="4.2">
 <h2 data-number="4.2" class="anchored" data-anchor-id="compartmental-models"><span class="header-section-number">4.2</span> Compartmental models</h2>
 <p>Simple models for the spread of infectious diseases are often based on the idea of <strong>compartments</strong>. Individuals in a population are classified into different compartments based on their disease status, and the model describes how individuals move between compartments over time.</p>
-<p>Common compartments include: Susceptible (available for infection, <span class="math inline">\(S\)</span>), Infected (and infectious!, <span class="math inline">\(I\)</span>), and Recovered (or removed, <span class="math inline">\(R\)</span>). The dynamics of the disease can be described using differential equations that govern the rates of change between these compartments.</p>
+<p>Common compartments include: Susceptible (available for infection, <span class="math inline">\(S\)</span>), Infected (and Infectious!, <span class="math inline">\(I\)</span>), and Recovered (or Removed, <span class="math inline">\(R\)</span>). The dynamics of the disease can be described using differential equations that govern the rates of change between these compartments.</p>
 <p>In most cases, one considers the total population fixed (the dynamics of the disease are rapid compared to the dynamics of the population), so that <span class="math inline">\(S + I + R = N\)</span> is constant, and <span class="math inline">\(N=1\)</span> without loss of generality (i.e., compartments represent the proportion of the population in each state). The simplest model is the <strong>SIR model</strong>, which assumes that individuals move from being susceptible to infected, and then to recovered. This model was proposed by Kermack and McKendrick in 1927, and is still widely used today, despite being exactly a century old!</p>
 <p>Many variations on this basic framework exist, including models that account for births and deaths, vaccination, waning immunity, and more. The SIR model is a foundational tool in epidemiology and provides insights into the dynamics of infectious diseases.</p>
 </section>
@@ -395,13 +395,86 @@ Figure&nbsp;4.1: Flow diagram of the SIR model. Susceptible individuals (<span c
 </section>
 <section id="number-of-people-experiencing-infection-over-time" class="level2" data-number="4.4">
 <h2 data-number="4.4" class="anchored" data-anchor-id="number-of-people-experiencing-infection-over-time"><span class="header-section-number">4.4</span> Number of people experiencing infection over time</h2>
-<p>Derive the S() and approximate the final size of the epidemic.</p>
+<p>The SIR model cannot be solved analytically, but we can determine what fraction of the population was infected over the entire course of an epidemic — the <strong>final attack rate</strong> — without integrating the differential equations. As <span class="math inline">\(t \to \infty\)</span> the epidemic subsides: <span class="math inline">\(I(\infty) = 0\)</span>, so all individuals are either susceptible or recovered, and <span class="math inline">\(S(\infty) + R(\infty) = 1\)</span>.</p>
+<p>To find <span class="math inline">\(S(\infty)\)</span>, we eliminate time from the ODEs by computing</p>
+<p><span class="math display">\[
+\frac{dS}{dR} = \frac{dS/dt}{dR/dt} = \frac{-\beta S I}{\gamma I} = -\frac{\beta}{\gamma} S = -R_0 \, S.
+\]</span></p>
+<p>This separable equation integrates to <span class="math inline">\(S(t) = S_0 \exp(-R_0 (R(t) - R(0)))\)</span>. Starting from a nearly fully susceptible population (<span class="math inline">\(S_0 \approx 1\)</span>, <span class="math inline">\(R(0) = 0\)</span>), and taking <span class="math inline">\(t \to \infty\)</span> with <span class="math inline">\(R(\infty) = 1 - S(\infty)\)</span>, we obtain the <strong>final size relation</strong>:</p>
+<p><span id="eq-sir-final-size"><span class="math display">\[
+S(\infty) = \exp\!\bigl(-R_0 \,(1 - S(\infty))\bigr).
+\tag{4.1}\]</span></span></p>
+<p>This is a fixed-point equation: the right-hand side depends on <span class="math inline">\(S(\infty)\)</span> itself, so it cannot be solved algebraically. It can, however, be solved numerically for any given <span class="math inline">\(R_0\)</span>. The final attack rate <span class="math inline">\(1 - S(\infty)\)</span> is plotted as a function of <span class="math inline">\(R_0\)</span> in <a href="#fig-sir-final-size" class="quarto-xref">Figure&nbsp;<span>4.2</span></a>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-sir-final-size" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sir-final-size-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03-pathogens_files/figure-html/fig-sir-final-size-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sir-final-size-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.2: Final attack rate <span class="math inline">\(1 - S(\infty)\)</span> as a function of <span class="math inline">\(R_0\)</span>, obtained by solving <a href="#eq-sir-final-size" class="quarto-xref">Equation&nbsp;<span>4.1</span></a> numerically. Below the epidemic threshold <span class="math inline">\(R_0 = 1\)</span> (red dashed line) the infection always dies out; above it a non-zero fraction of the population is infected. For <span class="math inline">\(R_0 = 2\)</span>, approximately 80% of a fully susceptible population is eventually infected before the epidemic ends.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>A striking feature of <a href="#eq-sir-final-size" class="quarto-xref">Equation&nbsp;<span>4.1</span></a> is that the final attack rate is entirely determined by <span class="math inline">\(R_0\)</span>, regardless of the individual values of <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\gamma\)</span>. Two diseases with different transmission and recovery rates but the same <span class="math inline">\(R_0\)</span> will infect the same total fraction of the population — even though their time courses may look very different.</p>
+<p>To see how <span class="math inline">\(R_0\)</span> influences this quantity, we can use the approximation:</p>
+<p><span class="math display">\[
+\log S(\infty) \approx -R_0 (1 - S(\infty)) \approx -R_0
+\]</span></p>
+<p>when <span class="math inline">\(R_0\)</span> is small</p>
 </section>
 <section id="vaccination" class="level2" data-number="4.5">
 <h2 data-number="4.5" class="anchored" data-anchor-id="vaccination"><span class="header-section-number">4.5</span> Vaccination</h2>
 <p>Explain how vaccination can be incorporated into the SIR model, and how it affects the dynamics of disease spread. Discuss herd immunity and the critical vaccination threshold.</p>
 <p>here it would be good to have a timeline for the eradication of smallpox and the near eradication of polio</p>
-<p>For measles, it would be interesting to show the recent resurgence of measles in the US and Europe, and how this is related to vaccination rates. This has become especially pressing in the US</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+The resurgence of measles in the United States
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Measles is one of the most transmissible human pathogens, with <span class="math inline">\(R_0\)</span> typically estimated between 12 and 18, so that vaccination coverage of roughly 95% is needed to prevent outbreaks. The figure below shows the number of reported cases in the United States since 1938.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-us-measles" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-us-measles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03-pathogens_files/figure-html/fig-us-measles-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-us-measles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.3: Reported measles cases in the US, 1938–2026 (log scale). Data from the CDC and earlier public health reports, compiled by Our World in Data. Dashed lines mark the licensure of the first measles vaccine (1963) and the declaration that measles was eliminated from the US (2000). The 2026 count (open circle) is incomplete: it covers cases through October 1.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Before the vaccine, hundreds of thousands of cases were reported every year. The introduction of the vaccine in 1963 led to a dramatic decline in measles cases.</p>
+<p>Note the spike in the number of cases in the period 1989–1991. The cause of this spike was attributed to low vaccination coverage among low-income, inner-city preschool-aged children who had not received their single recommended dose due to healthcare access barriers, underfunded public health infrastructure, and missed vaccination opportunities. In 1989, the CDC recommended adding a second dose of MMR before school entry. This was introduced because ~2–5% of individuals failed to develop immunity after a single dose (primary vaccine failure). This allowed to reach the minimum number of cases in recorded history, and in 2000 endemic transmission had stopped.</p>
+<p>Vaccination coverage among kindergartners has been reported by the CDC since the 2009–10 school year (<a href="#fig-us-kindergarten-mmr" class="quarto-xref">Figure&nbsp;<span>4.4</span></a>). National coverage with MMR hovered around the 95% needed to block transmission until 2019–20, and has since fallen steadily, while the fraction of children with an exemption from one or more vaccines has risen to its highest level on record.</p>
+<p>Since then, imported cases have found pockets of unvaccinated individuals, and the numbers have risen again: 2025 saw 2,289 cases, and by October 2026 the count was the highest since 1991. Why does a small decline in vaccination coverage, which may look harmless, have such a large effect on a disease with a very high <span class="math inline">\(R_0\)</span>?</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-us-kindergarten-mmr" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-us-kindergarten-mmr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03-pathogens_files/figure-html/fig-us-kindergarten-mmr-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-us-kindergarten-mmr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.4: MMR vaccination coverage (left) and exemption rate (right) among US kindergartners, school years 2009–10 to 2025–26. The dashed line marks 95% coverage. Data: CDC SchoolVaxView (state-reported); the 2010–11 school year was not reported. Note that coverage is measured at school entry.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
 </section>
 <section id="other-compartmental-models" class="level2" data-number="4.6">
 <h2 data-number="4.6" class="anchored" data-anchor-id="other-compartmental-models"><span class="header-section-number">4.6</span> Other compartmental models</h2>
@@ -414,7 +487,7 @@ Figure&nbsp;4.1: Flow diagram of the SIR model. Susceptible individuals (<span c
 <img src="03-pathogens_files/figure-html/fig-sir-demography-diagram-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sir-demography-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.2: SIR model with demography. Newborns enter the susceptible class at constant rate <span class="math inline">\(\Lambda\)</span>; all compartments experience natural mortality at per-capita rate <span class="math inline">\(\mu\)</span>.
+Figure&nbsp;4.5: SIR model with demography. Newborns enter the susceptible class at constant rate <span class="math inline">\(\Lambda\)</span>; all compartments experience natural mortality at per-capita rate <span class="math inline">\(\mu\)</span>.
 </figcaption>
 </figure>
 </div>
@@ -437,7 +510,7 @@ Figure&nbsp;4.2: SIR model with demography. Newborns enter the susceptible class
 <img src="03-pathogens_files/figure-html/fig-sis-diagram-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sis-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.3: Flow diagram of the SIS model. Recovered individuals return immediately to the susceptible class at rate <span class="math inline">\(\gamma I\)</span>, conferring no lasting immunity.
+Figure&nbsp;4.6: Flow diagram of the SIS model. Recovered individuals return immediately to the susceptible class at rate <span class="math inline">\(\gamma I\)</span>, conferring no lasting immunity.
 </figcaption>
 </figure>
 </div>
@@ -458,7 +531,7 @@ Figure&nbsp;4.3: Flow diagram of the SIS model. Recovered individuals return imm
 <img src="03-pathogens_files/figure-html/fig-seir-diagram-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-seir-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.4: SEIR model with waning immunity. Exposed individuals (<span class="math inline">\(E\)</span>) progress to infectious at rate <span class="math inline">\(\sigma E\)</span>; recovered individuals (<span class="math inline">\(R\)</span>) lose immunity and re-enter the susceptible class at rate <span class="math inline">\(\delta R\)</span>.
+Figure&nbsp;4.7: SEIR model with waning immunity. Exposed individuals (<span class="math inline">\(E\)</span>) progress to infectious at rate <span class="math inline">\(\sigma E\)</span>; recovered individuals (<span class="math inline">\(R\)</span>) lose immunity and re-enter the susceptible class at rate <span class="math inline">\(\delta R\)</span>.
 </figcaption>
 </figure>
 </div>
@@ -473,14 +546,14 @@ Figure&nbsp;4.4: SEIR model with waning immunity. Exposed individuals (<span cla
 \end{aligned}
 \]</span></p>
 <p>You can find more complex models in which some compartments represent a disease vector (e.g., mosquitoes) or a pathogen (e.g., free-living bacteria) in the environment. These models are often referred to as <strong>vector-borne</strong> or <strong>environmental transmission</strong> models, respectively. While the number of compartments and the complexity of the models can vary widely, the basic principles of compartmental modeling remain the same: individuals move between compartments based on rates that depend on the current state of the system.</p>
-<p><a href="#fig-zika-model" class="quarto-xref">Figure&nbsp;<span>4.5</span></a> shows a more complex example from <span class="citation" data-cites="roosa2019identifiability">Roosa and Chowell (<a href="#ref-roosa2019identifiability" role="doc-biblioref">2019</a>)</span>: a model of <strong>Zika virus transmission</strong> that couples two interacting populations — humans and mosquitoes. The human population is divided into susceptible (<span class="math inline">\(S_h\)</span>), exposed (<span class="math inline">\(E_h\)</span>), asymptomatically infectious (<span class="math inline">\(A_h\)</span>), symptomatically infectious (<span class="math inline">\(I_{h1}\)</span>), convalescent (<span class="math inline">\(I_{h2}\)</span>), and recovered (<span class="math inline">\(R_h\)</span>) classes. Mosquitoes are divided into susceptible (<span class="math inline">\(S_v\)</span>), exposed (<span class="math inline">\(E_v\)</span>), and infectious (<span class="math inline">\(I_v\)</span>) classes. Transmission is bidirectional: infectious mosquitoes (<span class="math inline">\(I_v\)</span>) infect susceptible humans (<span class="math inline">\(S_h\)</span>), and infectious humans (<span class="math inline">\(A_h\)</span>, <span class="math inline">\(I_{h1}\)</span>) infect susceptible mosquitoes (<span class="math inline">\(S_v\)</span>).</p>
+<p><a href="#fig-zika-model" class="quarto-xref">Figure&nbsp;<span>4.8</span></a> shows a more complex example from <span class="citation" data-cites="roosa2019identifiability">Roosa and Chowell (<a href="#ref-roosa2019identifiability" role="doc-biblioref">2019</a>)</span>: a model of <strong>Zika virus transmission</strong> that couples two interacting populations — humans and mosquitoes. The human population is divided into susceptible (<span class="math inline">\(S_h\)</span>), exposed (<span class="math inline">\(E_h\)</span>), asymptomatically infectious (<span class="math inline">\(A_h\)</span>), symptomatically infectious (<span class="math inline">\(I_{h1}\)</span>), convalescent (<span class="math inline">\(I_{h2}\)</span>), and recovered (<span class="math inline">\(R_h\)</span>) classes. Mosquitoes are divided into susceptible (<span class="math inline">\(S_v\)</span>), exposed (<span class="math inline">\(E_v\)</span>), and infectious (<span class="math inline">\(I_v\)</span>) classes. Transmission is bidirectional: infectious mosquitoes (<span class="math inline">\(I_v\)</span>) infect susceptible humans (<span class="math inline">\(S_h\)</span>), and infectious humans (<span class="math inline">\(A_h\)</span>, <span class="math inline">\(I_{h1}\)</span>) infect susceptible mosquitoes (<span class="math inline">\(S_v\)</span>).</p>
 <div id="fig-zika-model" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-zika-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="images/zika_roosa2019_fig4.jpg" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-zika-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.5: Compartmental diagram for the Zika virus transmission model of <span class="citation" data-cites="roosa2019identifiability">Roosa and Chowell (<a href="#ref-roosa2019identifiability" role="doc-biblioref">2019</a>)</span>. The human population (top) is divided into six classes; the mosquito (vector) population (dark blue outline) into three. Arrows are labelled with the rates governing transitions between compartments.
+Figure&nbsp;4.8: Compartmental diagram for the Zika virus transmission model of <span class="citation" data-cites="roosa2019identifiability">Roosa and Chowell (<a href="#ref-roosa2019identifiability" role="doc-biblioref">2019</a>)</span>. The human population (top) is divided into six classes; the mosquito (vector) population (dark blue outline) into three. Arrows are labelled with the rates governing transitions between compartments.
 </figcaption>
 </figure>
 </div>
