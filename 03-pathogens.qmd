@@ -17,7 +17,7 @@ source("R/figures.R")
 
 Simple models for the spread of infectious diseases are often based on the idea of **compartments**. Individuals in a population are classified into different compartments based on their disease status, and the model describes how individuals move between compartments over time.
 
-Common compartments include: Susceptible (available for infection, $S$), Infected (and infectious!, $I$), and Recovered (or removed, $R$). The dynamics of the disease can be described using differential equations that govern the rates of change between these compartments.
+Common compartments include: Susceptible (available for infection, $S$), Infected (and Infectious!, $I$), and Recovered (or Removed, $R$). The dynamics of the disease can be described using differential equations that govern the rates of change between these compartments.
 
 In most cases, one considers the total population fixed (the dynamics of the disease are rapid compared to the dynamics of the population), so that $S + I + R = N$ is constant, and $N=1$ without loss of generality (i.e., compartments represent the proportion of the population in each state). The simplest model is the **SIR model**, which assumes that individuals move from being susceptible to infected, and then to recovered. This model was proposed by Kermack and McKendrick in 1927, and is still widely used today, despite being exactly a century old! 
 
@@ -159,6 +159,14 @@ plot_sir_final_size()
 
 A striking feature of @eq-sir-final-size is that the final attack rate is entirely determined by $R_0$, regardless of the individual values of $\beta$ and $\gamma$. Two diseases with different transmission and recovery rates but the same $R_0$ will infect the same total fraction of the population — even though their time courses may look very different.
 
+To see how $R_0$ influences this quantity, we can use the approximation:
+
+$$
+\log S(\infty) \approx -R_0 (1 - S(\infty)) \approx -R_0
+$$
+
+when $R_0$ is small
+
 ## Vaccination
 
 Explain how vaccination can be incorporated into the SIR model, and how it affects the dynamics of disease spread. Discuss herd immunity and the critical vaccination threshold.
@@ -166,9 +174,34 @@ Explain how vaccination can be incorporated into the SIR model, and how it affec
 
 here it would be good to have a timeline for the eradication of smallpox and the near eradication of polio
 
-For measles, it would be interesting to show the recent resurgence of measles in the US and Europe, and how this is related to vaccination rates. This has become especially pressing in the US
 
+::: {.callout-note}
+## The resurgence of measles in the United States
 
+Measles is one of the most transmissible human pathogens, with $R_0$ typically estimated between 12 and 18, so that vaccination coverage of roughly 95% is needed to prevent outbreaks. The figure below shows the number of reported cases in the United States since 1938.
+
+```{r}
+#| label: fig-us-measles
+#| echo: false
+#| fig-cap: "Reported measles cases in the US, 1938–2026 (log scale). Data from the CDC and earlier public health reports, compiled by Our World in Data. Dashed lines mark the licensure of the first measles vaccine (1963) and the declaration that measles was eliminated from the US (2000). The 2026 count (open circle) is incomplete: it covers cases through October 1."
+plot_us_measles()
+```
+
+Before the vaccine, hundreds of thousands of cases were reported every year. The introduction of the vaccine in 1963 led to a dramatic decline in measles cases.
+
+Note the spike in the number of cases in the period 1989–1991. The cause of this spike was attributed to low vaccination coverage among low-income, inner-city preschool-aged children who had not received their single recommended dose due to healthcare access barriers, underfunded public health infrastructure, and missed vaccination opportunities. In 1989, the CDC recommended adding a second dose of MMR before school entry. This was introduced because ~2–5% of individuals failed to develop immunity after a single dose (primary vaccine failure). This allowed to reach the minimum number of cases in recorded history, and in 2000 endemic transmission had stopped.
+
+Vaccination coverage among kindergartners has been reported by the CDC since the 2009–10 school year (@fig-us-kindergarten-mmr). National coverage with MMR hovered around the 95% needed to block transmission until 2019–20, and has since fallen steadily, while the fraction of children with an exemption from one or more vaccines has risen to its highest level on record.
+
+Since then, imported cases have found pockets of unvaccinated individuals, and the numbers have risen again: 2025 saw 2,289 cases, and by October 2026 the count was the highest since 1991. Why does a small decline in vaccination coverage, which may look harmless, have such a large effect on a disease with a very high $R_0$?
+
+```{r}
+#| label: fig-us-kindergarten-mmr
+#| echo: false
+#| fig-cap: "MMR vaccination coverage (left) and exemption rate (right) among US kindergartners, school years 2009–10 to 2025–26. The dashed line marks 95% coverage. Data: CDC SchoolVaxView (state-reported); the 2010–11 school year was not reported. Note that coverage is measured at school entry."
+plot_us_kindergarten_mmr()
+```
+:::
 
 
 

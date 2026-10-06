@@ -466,3 +466,42 @@ plot_births_by_day <- function() {
     ) +
     labs(x = NULL, y = "Average births per day")
 }
+
+plot_us_measles <- function() {
+  d <- read_csv("data/us_measles_cases.csv", show_col_types = FALSE)
+  events <- tribble(
+    ~year, ~label,                ~y,  ~hjust,
+    1963, "Vaccine licensed",       12,  0,
+    2000, "Elimination declared",   3e6, 1
+  )
+
+  ggplot(d, aes(year, cases)) +
+    geom_vline(data = events, aes(xintercept = year),
+               linetype = "dashed", color = "grey50") +
+    geom_text(data = events, aes(x = year, y = y, label = label, hjust = hjust),
+              angle = 90, vjust = -0.4, size = 3, color = "grey30",
+              inherit.aes = FALSE) +
+    geom_line(color = "#2980b9", linewidth = 0.6) +
+    geom_point(data = \(x) filter(x, year < 2026), size = 0.8, color = "#2980b9") +
+    geom_point(data = \(x) filter(x, year == 2026), shape = 21, size = 2,
+               fill = "white", color = "#e74c3c", stroke = 1) +
+    scale_y_log10(labels = scales::comma, limits = c(10, 3e6)) +
+    labs(x = NULL, y = "Reported measles cases (log scale)")
+}
+
+plot_us_kindergarten_mmr <- function() {
+  labs_m <- c(mmr = "Kindergartners with MMR (%)",
+              any_exemption = "Kindergartners with any exemption (%)")
+
+  read_csv("data/us_kindergarten_mmr.csv", show_col_types = FALSE) |>
+    mutate(year = as.integer(substr(school_year, 1, 4)) + 1) |>
+    pivot_longer(c(mmr, any_exemption), names_to = "measure", values_to = "pct") |>
+    mutate(measure = factor(labs_m[measure], levels = labs_m)) |>
+    ggplot(aes(year, pct)) +
+    geom_hline(data = tibble(measure = factor(labs_m[["mmr"]], levels = labs_m)),
+               aes(yintercept = 95), linetype = "dashed", color = "grey50") +
+    geom_line(color = "#2980b9", linewidth = 0.6) +
+    geom_point(size = 1.2, color = "#2980b9") +
+    facet_wrap(~measure, nrow = 1, scales = "free_y") +
+    labs(x = "End of school year", y = NULL)
+}
