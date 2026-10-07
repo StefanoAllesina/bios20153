@@ -51,7 +51,7 @@ $$
 \frac{1}{I} \frac{dI}{dt} = \beta S - \gamma
 $$
 
-and thus the number of infected individuals will increase when $\beta S/\gamma > 1$. Suppose that the population is initially entirely susceptible, so that $S \approx 1$. Then the condition for the number of infected individuals to increase is $\beta/\gamma > 1$, which leads to the concept of the **basic reproduction number** $R_0 = \beta / \gamma$, which determines whether an infection will spread in a population. If $R_0 > 1$, the infection can invade and cause an epidemic; if $R_0 < 1$, the infection will die out. This quantity can be interpreted as the average number of secondary infections produced by a single infected individual in a completely susceptible population. The basic reproduction number is a fundamental concept in epidemiology and is used to assess the potential for disease outbreaks and to inform public health interventions.
+and thus the number of infected individuals will increase when $\beta S/\gamma > 1$. Suppose that the population is initially entirely susceptible, so that $S \approx 1$. Then the condition for the number of infected individuals to increase is $\beta/\gamma > 1$, which leads to the concept of the **basic reproduction number** $\mathcal{R}_0 = \beta / \gamma$, which determines whether an infection will spread in a population. If $\mathcal{R}_0 > 1$, the infection can invade and cause an epidemic; if $\mathcal{R}_0 < 1$, the infection will die out. This quantity can be interpreted as the average number of secondary infections produced by a single infected individual in a completely susceptible population. The basic reproduction number is a fundamental concept in epidemiology and is used to assess the potential for disease outbreaks and to inform public health interventions.
 
 With these qualitiative insights, we can now explore the dynamics of the SIR model in more detail, including the effects of varying parameters and initial conditions on the spread of infectious diseases. 
 
@@ -138,34 +138,46 @@ The SIR model cannot be solved analytically, but we can determine what fraction 
 To find $S(\infty)$, we eliminate time from the ODEs by computing
 
 $$
-\frac{dS}{dR} = \frac{dS/dt}{dR/dt} = \frac{-\beta S I}{\gamma I} = -\frac{\beta}{\gamma} S = -R_0 \, S.
+\frac{dS}{dR} = \frac{dS/dt}{dR/dt} = \frac{-\beta S I}{\gamma I} = -\frac{\beta}{\gamma} S = -\mathcal{R}_0 \, S.
 $$
 
-This separable equation integrates to $S(t) = S_0 \exp(-R_0 (R(t) - R(0)))$. Starting from a nearly fully susceptible population ($S_0 \approx 1$, $R(0) = 0$), and taking $t \to \infty$ with $R(\infty) = 1 - S(\infty)$, we obtain the **final size relation**:
+This separable equation integrates to $S(t) = S_0 \exp(-\mathcal{R}_0 (R(t) - R(0)))$. Starting from a nearly fully susceptible population ($S_0 \approx 1$, $R(0) = 0$), and taking $t \to \infty$ with $R(\infty) = 1 - S(\infty)$, we obtain the **final size relation**:
 
 $$
-S(\infty) = \exp\!\bigl(-R_0 \,(1 - S(\infty))\bigr).
+S(\infty) = \exp\!\bigl(-\mathcal{R}_0 \,(1 - S(\infty))\bigr).
 $$ {#eq-sir-final-size}
 
-This is a fixed-point equation: the right-hand side depends on $S(\infty)$ itself, so it cannot be solved algebraically. It can, however, be solved numerically for any given $R_0$. The final attack rate $1 - S(\infty)$ is plotted as a function of $R_0$ in @fig-sir-final-size.
+This is a fixed-point equation: the right-hand side depends on $S(\infty)$ itself, so it cannot be solved algebraically. It can, however, be solved numerically for any given $\mathcal{R}_0$. The final attack rate $1 - S(\infty)$ is plotted as a function of $\mathcal{R}_0$ in @fig-sir-final-size.
 
 ```{r}
 #| label: fig-sir-final-size
 #| echo: false
 #| fig-height: 3.5
-#| fig-cap: "Final attack rate $1 - S(\\infty)$ as a function of $R_0$, obtained by solving @eq-sir-final-size numerically. Below the epidemic threshold $R_0 = 1$ (red dashed line) the infection always dies out; above it a non-zero fraction of the population is infected. For $R_0 = 2$, approximately 80% of a fully susceptible population is eventually infected before the epidemic ends."
+#| fig-cap: "Final attack rate $1 - S(\\infty)$ as a function of $\\mathcal{R}_0$, obtained by solving @eq-sir-final-size numerically. Below the epidemic threshold $\\mathcal{R}_0 = 1$ (red dashed line) the infection always dies out; above it a non-zero fraction of the population is infected. For $\\mathcal{R}_0 = 2$, approximately 80% of a fully susceptible population is eventually infected before the epidemic ends. Dashed curves: approximation close to the threshold (@eq-final-size-small) and for large $\\mathcal{R}_0$ (@eq-final-size-large)."
 plot_sir_final_size()
 ```
 
-A striking feature of @eq-sir-final-size is that the final attack rate is entirely determined by $R_0$, regardless of the individual values of $\beta$ and $\gamma$. Two diseases with different transmission and recovery rates but the same $R_0$ will infect the same total fraction of the population — even though their time courses may look very different.
+A striking feature of @eq-sir-final-size is that the final attack rate is entirely determined by $\mathcal{R}_0$, regardless of the individual values of $\beta$ and $\gamma$. Two diseases with different transmission and recovery rates but the same $\mathcal{R}_0$ will infect the same total fraction of the population — even though their time courses may look very different.
 
-To see how $R_0$ influences this quantity, we can use the approximation:
+To see how $\mathcal{R}_0$ influences the final attack rate, it helps to solve @eq-sir-final-size approximately in two limits. Let $z = 1 - S(\infty)$ be the final attack rate, so that $1 - z = e^{-\mathcal{R}_0 z}$.
+
+**Large $\mathcal{R}_0$.** When $\mathcal{R}_0$ is large nearly everybody is infected, so $z \approx 1$ and $\log S(\infty) = -\mathcal{R}_0 z \approx -\mathcal{R}_0$. The fraction of the population that escapes infection is
 
 $$
-\log S(\infty) \approx -R_0 (1 - S(\infty)) \approx -R_0
-$$
+S(\infty) \approx e^{-\mathcal{R}_0},
+$$ {#eq-final-size-large}
 
-when $R_0$ is small
+which decays exponentially with $\mathcal{R}_0$: for $\mathcal{R}_0 = 3$ roughly 5% of the population escapes the epidemic, and for $\mathcal{R}_0 = 5$ less than 1% does. This is the regime of measles, for which essentially everybody not immunized is infected.
+
+**Close to the threshold.** When $\mathcal{R}_0 = 1 + \varepsilon$ with $\varepsilon$ small, the attack rate $z$ is also small, and we can expand the exponential to second order, $1 - z \approx 1 - \mathcal{R}_0 z + \mathcal{R}_0^2 z^2/2$. Dividing by $z$ and rearranging gives
+
+$$
+z \approx \frac{2(\mathcal{R}_0 - 1)}{\mathcal{R}_0^2} \approx 2 (\mathcal{R}_0 - 1),
+$$ {#eq-final-size-small}
+
+so just above the threshold the attack rate grows linearly with $\mathcal{R}_0 - 1$, with slope 2: a pathogen with $\mathcal{R}_0 = 1.1$ infects about 17% of the population (@eq-final-size-small gives 17%, the rougher $2(\mathcal{R}_0-1)$ gives 20%).
+
+In short: for $\mathcal{R}_0 \gtrsim 3$ use @eq-final-size-large, and for $\mathcal{R}_0 \lesssim 1.3$ use @eq-final-size-small. In between, solve @eq-sir-final-size numerically. @fig-sir-final-size compares the two approximations with the exact solution.
 
 ## Vaccination
 
@@ -184,14 +196,14 @@ Smallpox is the only human disease that has been eradicated. The last natural ca
 plot_smallpox_cases()
 ```
 
-Why was smallpox such a good target? Humans are the only host of the virus, so there is no animal reservoir from which it can re-invade. Infections are not silent: infected individuals develop a recognizable rash and are infectious mostly after it appears, so cases can be found, isolated, and the contacts of each case vaccinated ("ring vaccination") instead of vaccinating everybody. Survivors are immune for life, and the vaccine is cheap and stable. Finally, the basic reproduction number is moderate (typically estimated between 3 and 6), so that the fraction that must be immune to prevent spread, $1 - 1/R_0$, is relatively low.
+Why was smallpox such a good target? Humans are the only host of the virus, so there is no animal reservoir from which it can re-invade. Infections are not silent: infected individuals develop a recognizable rash and are infectious mostly after it appears, so cases can be found, isolated, and the contacts of each case vaccinated ("ring vaccination") instead of vaccinating everybody. Survivors are immune for life, and the vaccine is cheap and stable. Finally, the basic reproduction number is moderate (typically estimated between 3 and 6), so that the fraction that must be immune to prevent spread, $1 - 1/\mathcal{R}_0$, is relatively low.
 :::
 
 
 ::: {.callout-note}
 ## The resurgence of measles in the United States
 
-Measles is one of the most transmissible human pathogens, with $R_0$ typically estimated between 12 and 18, so that vaccination coverage of roughly 95% is needed to prevent outbreaks. The figure below shows the number of reported cases in the United States since 1938.
+Measles is one of the most transmissible human pathogens, with $\mathcal{R}_0$ typically estimated between 12 and 18, so that vaccination coverage of roughly 95% is needed to prevent outbreaks. The figure below shows the number of reported cases in the United States since 1938.
 
 ```{r}
 #| label: fig-us-measles
@@ -206,7 +218,7 @@ Note the spike in the number of cases in the period 1989–1991. The cause of th
 
 Vaccination coverage among kindergartners has been reported by the CDC since the 2009–10 school year (@fig-us-kindergarten-mmr). National coverage with MMR hovered around the 95% needed to block transmission until 2019–20, and has since fallen steadily, while the fraction of children with an exemption from one or more vaccines has risen to its highest level on record.
 
-Since then, imported cases have found pockets of unvaccinated individuals, and the numbers have risen again: 2025 saw 2,289 cases, and by October 2026 the count was the highest since 1991. Why does a small decline in vaccination coverage, which may look harmless, have such a large effect on a disease with a very high $R_0$?
+Since then, imported cases have found pockets of unvaccinated individuals, and the numbers have risen again: 2025 saw 2,289 cases, and by October 2026 the count was the highest since 1991. Why does a small decline in vaccination coverage, which may look harmless, have such a large effect on a disease with a very high $\mathcal{R}_0$?
 
 ```{r}
 #| label: fig-us-kindergarten-mmr

@@ -382,14 +382,27 @@ plot_sir_final_size <- function(R0_max = 5) {
     uniroot(function(z) z - 1 + exp(-R0 * z), c(1e-8, 1 - 1e-8))$root
   }
   R0_vals <- seq(0.5, R0_max, length.out = 400)
-  tibble(R0 = R0_vals, z = vapply(R0_vals, final_z, numeric(1))) |>
-    ggplot(aes(R0, z)) +
+  tibble(R0 = R0_vals,
+         Exact = vapply(R0_vals, final_z, numeric(1)),
+         `Near threshold` = ifelse(R0_vals > 1, 2 * (R0_vals - 1) / R0_vals^2, NA),
+         `Large R0` = ifelse(R0_vals > 1, 1 - exp(-R0_vals), NA)) |>
+    pivot_longer(-R0, names_to = "curve", values_to = "z") |>
+    mutate(curve = factor(curve, levels = c("Exact", "Near threshold", "Large R0"),
+                          labels = c("Exact", "Near threshold", "Large R0"))) |>
+    ggplot(aes(R0, z, color = curve, linetype = curve, linewidth = curve)) +
     geom_vline(xintercept = 1, linetype = "dashed", color = "#e74c3c",
                linewidth = 0.7) +
-    geom_line(linewidth = 0.9, color = "#2980b9") +
+    geom_line(na.rm = TRUE) +
+    scale_color_manual(values = c(Exact = "#2980b9", `Near threshold` = "#e67e22",
+                                  `Large R0` = "#27ae60"), name = NULL) +
+    scale_linetype_manual(values = c(Exact = "solid", `Near threshold` = "dashed",
+                                     `Large R0` = "dashed"), name = NULL) +
+    scale_linewidth_manual(values = c(Exact = 0.9, `Near threshold` = 0.7,
+                                      `Large R0` = 0.7), name = NULL) +
     scale_x_continuous(breaks = 1:R0_max) +
     scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.25)) +
-    labs(x = expression(R[0]), y = "Final attack rate")
+    labs(x = "Basic reproduction number", y = "Final attack rate") +
+    theme(legend.position = "bottom")
 }
 
 plot_sir_dynamics_static <- function(
