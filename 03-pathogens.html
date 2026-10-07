@@ -323,59 +323,61 @@ Figure&nbsp;4.1: Flow diagram of the SIR model. Susceptible individuals (<span c
 <p>With these qualitiative insights, we can now explore the dynamics of the SIR model in more detail, including the effects of varying parameters and initial conditions on the spread of infectious diseases.</p>
 <section id="sec-topic3-sir-dynamics" class="level3" data-number="4.3.1">
 <h3 data-number="4.3.1" class="anchored" data-anchor-id="sec-topic3-sir-dynamics"><span class="header-section-number">4.3.1</span> Dynamics of the SIR model</h3>
+<p>The figure below shows the dynamics of the model for <span class="math inline">\(\beta = 2\)</span> and <span class="math inline">\(\gamma = 1\)</span>, so that <span class="math inline">\(\mathcal{R}_0 = 2\)</span>. The left panel shows the proportion of the population in each compartment through time, starting from a small number of infected individuals (<span class="math inline">\(I_0 = 0.01\)</span>). The right panel shows the same trajectory in the <strong>phase plane</strong>, with the susceptible proportion on the horizontal axis and the infected proportion on the vertical axis: time is not shown explicitly, but the trajectory is traced from the filled dot, and the grey arrows show the direction in which the system moves from any given state. The orange dashed line marks <span class="math inline">\(S = \gamma/\beta\)</span>, the value of <span class="math inline">\(S\)</span> at which <span class="math inline">\(dI/dt = 0\)</span>.</p>
+<p>In the interactive version, move the slider to change the initial fraction of susceptible individuals <span class="math inline">\(S_0\)</span>; the remaining individuals (<span class="math inline">\(1 - S_0 - I_0\)</span>) start in the recovered class, and are therefore immune. Try starting with a fully susceptible population (<span class="math inline">\(S_0\)</span> close to 1), and then progressively reduce <span class="math inline">\(S_0\)</span>. In the PDF version, three representative values of <span class="math inline">\(S_0\)</span> are shown. As you do so, pay attention to three things: whether an epidemic occurs at all, how high the peak of <span class="math inline">\(I\)</span> is, and how many susceptible individuals remain at the end.</p>
 <div class="cell">
-<div class="sourceCode cell-code hidden" id="cb1" data-startfrom="69" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 68;"><span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>viewof sir_i <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>([<span class="dv">1</span><span class="op">,</span> <span class="dv">99</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">99</span><span class="op">,</span></span>
-<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Initial susceptible S₀"</span>})</span>
-<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a>{</span>
-<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> S0    <span class="op">=</span> sir_i <span class="op">/</span> <span class="dv">100</span><span class="op">;</span></span>
-<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> Rinit <span class="op">=</span> (<span class="dv">1</span> <span class="op">-</span> S0 <span class="op">-</span> <span class="fl">0.01</span>)<span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">2</span>)<span class="op">;</span></span>
-<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> rows  <span class="op">=</span> <span class="fu">transpose</span>(sir_traj)<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">i</span> <span class="op">===</span> sir_i)<span class="op">;</span></span>
-<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> vf    <span class="op">=</span> <span class="fu">transpose</span>(sir_vfield)<span class="op">;</span></span>
-<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> tlong <span class="op">=</span> rows<span class="op">.</span><span class="fu">flatMap</span>(d <span class="kw">=&gt;</span> [</span>
-<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">t</span><span class="op">:</span> d<span class="op">.</span><span class="at">t</span><span class="op">,</span> <span class="dt">comp</span><span class="op">:</span> <span class="st">"S"</span><span class="op">,</span> <span class="dt">val</span><span class="op">:</span> d<span class="op">.</span><span class="at">S</span>}<span class="op">,</span></span>
-<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">t</span><span class="op">:</span> d<span class="op">.</span><span class="at">t</span><span class="op">,</span> <span class="dt">comp</span><span class="op">:</span> <span class="st">"I"</span><span class="op">,</span> <span class="dt">val</span><span class="op">:</span> d<span class="op">.</span><span class="at">I</span>}<span class="op">,</span></span>
-<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">t</span><span class="op">:</span> d<span class="op">.</span><span class="at">t</span><span class="op">,</span> <span class="dt">comp</span><span class="op">:</span> <span class="st">"R"</span><span class="op">,</span> <span class="dt">val</span><span class="op">:</span> d<span class="op">.</span><span class="at">R</span>}</span>
-<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>  ])<span class="op">;</span></span>
-<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> pal <span class="op">=</span> {<span class="dt">domain</span><span class="op">:</span> [<span class="st">"S"</span><span class="op">,</span><span class="st">"I"</span><span class="op">,</span><span class="st">"R"</span>]<span class="op">,</span> <span class="dt">range</span><span class="op">:</span> [<span class="st">"#2980b9"</span><span class="op">,</span><span class="st">"#e74c3c"</span><span class="op">,</span><span class="st">"#27ae60"</span>]}<span class="op">;</span></span>
-<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> lp <span class="op">=</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
-<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> <span class="dv">360</span><span class="op">,</span> <span class="dt">height</span><span class="op">:</span> <span class="dv">290</span><span class="op">,</span></span>
-<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Time (t)"</span>}<span class="op">,</span></span>
-<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Proportion"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="dv">0</span><span class="op">,</span> <span class="dv">1</span>]}<span class="op">,</span></span>
-<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a>    <span class="dt">color</span><span class="op">:</span> {<span class="op">...</span>pal<span class="op">,</span> <span class="dt">legend</span><span class="op">:</span> <span class="kw">true</span>}<span class="op">,</span></span>
-<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
-<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">line</span>(tlong<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"t"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"val"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"comp"</span><span class="op">,</span> <span class="dt">strokeWidth</span><span class="op">:</span> <span class="dv">2</span>})</span>
-<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
-<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> rp <span class="op">=</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
-<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> <span class="dv">360</span><span class="op">,</span> <span class="dt">height</span><span class="op">:</span> <span class="dv">290</span><span class="op">,</span></span>
-<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Susceptible (S)"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="dv">0</span><span class="op">,</span> <span class="dv">1</span>]}<span class="op">,</span></span>
-<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Infected (I)"</span><span class="op">,</span>    <span class="dt">domain</span><span class="op">:</span> [<span class="dv">0</span><span class="op">,</span> <span class="fl">0.3</span>]}<span class="op">,</span></span>
-<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
-<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">arrow</span>(vf<span class="op">,</span> {<span class="dt">x1</span><span class="op">:</span><span class="st">"S"</span><span class="op">,</span> <span class="dt">y1</span><span class="op">:</span><span class="st">"I"</span><span class="op">,</span> <span class="dt">x2</span><span class="op">:</span><span class="st">"S2"</span><span class="op">,</span> <span class="dt">y2</span><span class="op">:</span><span class="st">"I2"</span><span class="op">,</span></span>
-<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span><span class="st">"#ccc"</span><span class="op">,</span> <span class="dt">strokeWidth</span><span class="op">:</span><span class="fl">0.8</span><span class="op">,</span> <span class="dt">headLength</span><span class="op">:</span><span class="dv">4</span>})<span class="op">,</span></span>
-<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">ruleX</span>([<span class="fl">0.5</span>]<span class="op">,</span> {<span class="dt">stroke</span><span class="op">:</span><span class="st">"#e67e22"</span><span class="op">,</span> <span class="dt">strokeDasharray</span><span class="op">:</span><span class="st">"5,3"</span><span class="op">,</span> <span class="dt">strokeWidth</span><span class="op">:</span><span class="fl">1.2</span>})<span class="op">,</span></span>
-<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">line</span>(rows<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span><span class="st">"S"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span><span class="st">"I"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span><span class="st">"#444"</span><span class="op">,</span> <span class="dt">strokeWidth</span><span class="op">:</span><span class="dv">2</span>})<span class="op">,</span></span>
-<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">dot</span>([{<span class="dt">S</span><span class="op">:</span> S0<span class="op">,</span> <span class="dt">I</span><span class="op">:</span> <span class="fl">0.01</span>}]<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span><span class="st">"S"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span><span class="st">"I"</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span><span class="dv">5</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span><span class="st">"#444"</span>})</span>
-<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
-<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">html</span><span class="vs">`&lt;div&gt;</span></span>
-<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;p style="font-size:0.87em;margin:0 0 5px"&gt;</span></span>
-<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a><span class="vs">      &lt;strong&gt;S₀ = </span><span class="sc">${</span>S0<span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">2</span>)<span class="sc">}</span><span class="vs">&lt;/strong&gt;, I₀ = 0.01,</span></span>
-<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a><span class="vs">      initial recovered = </span><span class="sc">${</span>Rinit<span class="sc">}</span><span class="vs">;&amp;ensp;β = 2, γ = 1</span></span>
-<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;/p&gt;</span></span>
-<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;div style="display:flex;gap:8px;align-items:flex-start"&gt;</span><span class="sc">${</span>lp<span class="sc">}${</span>rp<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
-<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;p style="font-size:0.82em;color:#666;margin:4px 0 0"&gt;</span></span>
-<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a><span class="vs">      Orange dashed line: herd immunity threshold S = γ/β = 0.5.</span></span>
-<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a><span class="vs">      Filled dot marks the initial state; trajectory moves leftward as S decreases.</span></span>
-<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;/p&gt;</span></span>
-<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;/div&gt;`</span><span class="op">;</span></span>
-<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb1" data-startfrom="73" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 72;"><span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>viewof sir_i <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>([<span class="dv">1</span><span class="op">,</span> <span class="dv">99</span>]<span class="op">,</span> {<span class="dt">step</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">value</span><span class="op">:</span> <span class="dv">99</span><span class="op">,</span></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>  <span class="dt">label</span><span class="op">:</span> <span class="st">"Initial susceptible S₀"</span>})</span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> S0    <span class="op">=</span> sir_i <span class="op">/</span> <span class="dv">100</span><span class="op">;</span></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> Rinit <span class="op">=</span> (<span class="dv">1</span> <span class="op">-</span> S0 <span class="op">-</span> <span class="fl">0.01</span>)<span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">2</span>)<span class="op">;</span></span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> rows  <span class="op">=</span> <span class="fu">transpose</span>(sir_traj)<span class="op">.</span><span class="fu">filter</span>(d <span class="kw">=&gt;</span> d<span class="op">.</span><span class="at">i</span> <span class="op">===</span> sir_i)<span class="op">;</span></span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> vf    <span class="op">=</span> <span class="fu">transpose</span>(sir_vfield)<span class="op">;</span></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> tlong <span class="op">=</span> rows<span class="op">.</span><span class="fu">flatMap</span>(d <span class="kw">=&gt;</span> [</span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">t</span><span class="op">:</span> d<span class="op">.</span><span class="at">t</span><span class="op">,</span> <span class="dt">comp</span><span class="op">:</span> <span class="st">"S"</span><span class="op">,</span> <span class="dt">val</span><span class="op">:</span> d<span class="op">.</span><span class="at">S</span>}<span class="op">,</span></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">t</span><span class="op">:</span> d<span class="op">.</span><span class="at">t</span><span class="op">,</span> <span class="dt">comp</span><span class="op">:</span> <span class="st">"I"</span><span class="op">,</span> <span class="dt">val</span><span class="op">:</span> d<span class="op">.</span><span class="at">I</span>}<span class="op">,</span></span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>    {<span class="dt">t</span><span class="op">:</span> d<span class="op">.</span><span class="at">t</span><span class="op">,</span> <span class="dt">comp</span><span class="op">:</span> <span class="st">"R"</span><span class="op">,</span> <span class="dt">val</span><span class="op">:</span> d<span class="op">.</span><span class="at">R</span>}</span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a>  ])<span class="op">;</span></span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> pal <span class="op">=</span> {<span class="dt">domain</span><span class="op">:</span> [<span class="st">"S"</span><span class="op">,</span><span class="st">"I"</span><span class="op">,</span><span class="st">"R"</span>]<span class="op">,</span> <span class="dt">range</span><span class="op">:</span> [<span class="st">"#2980b9"</span><span class="op">,</span><span class="st">"#e74c3c"</span><span class="op">,</span><span class="st">"#27ae60"</span>]}<span class="op">;</span></span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> lp <span class="op">=</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> <span class="dv">360</span><span class="op">,</span> <span class="dt">height</span><span class="op">:</span> <span class="dv">290</span><span class="op">,</span></span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Time (t)"</span>}<span class="op">,</span></span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Proportion"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="dv">0</span><span class="op">,</span> <span class="dv">1</span>]}<span class="op">,</span></span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>    <span class="dt">color</span><span class="op">:</span> {<span class="op">...</span>pal<span class="op">,</span> <span class="dt">legend</span><span class="op">:</span> <span class="kw">true</span>}<span class="op">,</span></span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">line</span>(tlong<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span> <span class="st">"t"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span> <span class="st">"val"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span> <span class="st">"comp"</span><span class="op">,</span> <span class="dt">strokeWidth</span><span class="op">:</span> <span class="dv">2</span>})</span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-100"><a href="#cb1-100" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> rp <span class="op">=</span> Plot<span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb1-101"><a href="#cb1-101" aria-hidden="true" tabindex="-1"></a>    <span class="dt">width</span><span class="op">:</span> <span class="dv">360</span><span class="op">,</span> <span class="dt">height</span><span class="op">:</span> <span class="dv">290</span><span class="op">,</span></span>
+<span id="cb1-102"><a href="#cb1-102" aria-hidden="true" tabindex="-1"></a>    <span class="dt">x</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Susceptible (S)"</span><span class="op">,</span> <span class="dt">domain</span><span class="op">:</span> [<span class="dv">0</span><span class="op">,</span> <span class="dv">1</span>]}<span class="op">,</span></span>
+<span id="cb1-103"><a href="#cb1-103" aria-hidden="true" tabindex="-1"></a>    <span class="dt">y</span><span class="op">:</span> {<span class="dt">label</span><span class="op">:</span> <span class="st">"Infected (I)"</span><span class="op">,</span>    <span class="dt">domain</span><span class="op">:</span> [<span class="dv">0</span><span class="op">,</span> <span class="fl">0.3</span>]}<span class="op">,</span></span>
+<span id="cb1-104"><a href="#cb1-104" aria-hidden="true" tabindex="-1"></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb1-105"><a href="#cb1-105" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">arrow</span>(vf<span class="op">,</span> {<span class="dt">x1</span><span class="op">:</span><span class="st">"S"</span><span class="op">,</span> <span class="dt">y1</span><span class="op">:</span><span class="st">"I"</span><span class="op">,</span> <span class="dt">x2</span><span class="op">:</span><span class="st">"S2"</span><span class="op">,</span> <span class="dt">y2</span><span class="op">:</span><span class="st">"I2"</span><span class="op">,</span></span>
+<span id="cb1-106"><a href="#cb1-106" aria-hidden="true" tabindex="-1"></a>        <span class="dt">stroke</span><span class="op">:</span><span class="st">"#ccc"</span><span class="op">,</span> <span class="dt">strokeWidth</span><span class="op">:</span><span class="fl">0.8</span><span class="op">,</span> <span class="dt">headLength</span><span class="op">:</span><span class="dv">4</span>})<span class="op">,</span></span>
+<span id="cb1-107"><a href="#cb1-107" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">ruleX</span>([<span class="fl">0.5</span>]<span class="op">,</span> {<span class="dt">stroke</span><span class="op">:</span><span class="st">"#e67e22"</span><span class="op">,</span> <span class="dt">strokeDasharray</span><span class="op">:</span><span class="st">"5,3"</span><span class="op">,</span> <span class="dt">strokeWidth</span><span class="op">:</span><span class="fl">1.2</span>})<span class="op">,</span></span>
+<span id="cb1-108"><a href="#cb1-108" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">line</span>(rows<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span><span class="st">"S"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span><span class="st">"I"</span><span class="op">,</span> <span class="dt">stroke</span><span class="op">:</span><span class="st">"#444"</span><span class="op">,</span> <span class="dt">strokeWidth</span><span class="op">:</span><span class="dv">2</span>})<span class="op">,</span></span>
+<span id="cb1-109"><a href="#cb1-109" aria-hidden="true" tabindex="-1"></a>      Plot<span class="op">.</span><span class="fu">dot</span>([{<span class="dt">S</span><span class="op">:</span> S0<span class="op">,</span> <span class="dt">I</span><span class="op">:</span> <span class="fl">0.01</span>}]<span class="op">,</span> {<span class="dt">x</span><span class="op">:</span><span class="st">"S"</span><span class="op">,</span> <span class="dt">y</span><span class="op">:</span><span class="st">"I"</span><span class="op">,</span> <span class="dt">r</span><span class="op">:</span><span class="dv">5</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span><span class="st">"#444"</span>})</span>
+<span id="cb1-110"><a href="#cb1-110" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb1-111"><a href="#cb1-111" aria-hidden="true" tabindex="-1"></a>  })<span class="op">;</span></span>
+<span id="cb1-112"><a href="#cb1-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-113"><a href="#cb1-113" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">html</span><span class="vs">`&lt;div&gt;</span></span>
+<span id="cb1-114"><a href="#cb1-114" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;p style="font-size:0.87em;margin:0 0 5px"&gt;</span></span>
+<span id="cb1-115"><a href="#cb1-115" aria-hidden="true" tabindex="-1"></a><span class="vs">      &lt;strong&gt;S₀ = </span><span class="sc">${</span>S0<span class="op">.</span><span class="fu">toFixed</span>(<span class="dv">2</span>)<span class="sc">}</span><span class="vs">&lt;/strong&gt;, I₀ = 0.01,</span></span>
+<span id="cb1-116"><a href="#cb1-116" aria-hidden="true" tabindex="-1"></a><span class="vs">      initial recovered = </span><span class="sc">${</span>Rinit<span class="sc">}</span><span class="vs">;&amp;ensp;β = 2, γ = 1</span></span>
+<span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;/p&gt;</span></span>
+<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;div style="display:flex;gap:8px;align-items:flex-start"&gt;</span><span class="sc">${</span>lp<span class="sc">}${</span>rp<span class="sc">}</span><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;p style="font-size:0.82em;color:#666;margin:4px 0 0"&gt;</span></span>
+<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a><span class="vs">      Orange dashed line: herd immunity threshold S = γ/β = 0.5.</span></span>
+<span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a><span class="vs">      Filled dot marks the initial state; trajectory moves leftward as S decreases.</span></span>
+<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a><span class="vs">    &lt;/p&gt;</span></span>
+<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a><span class="vs">  &lt;/div&gt;`</span><span class="op">;</span></span>
+<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
 <div id="ojs-cell-1-1" data-nodetype="declaration">
@@ -391,6 +393,11 @@ Figure&nbsp;4.1: Flow diagram of the SIR model. Susceptible individuals (<span c
 </div>
 </div>
 </div>
+<p>What do we learn from the figure?</p>
+<p>First, <strong>an epidemic occurs only if <span class="math inline">\(S_0 &gt; \gamma/\beta\)</span></strong>. To the right of the dashed line in the phase plane, <span class="math inline">\(dI/dt &gt; 0\)</span> and the arrows point upward; to the left, <span class="math inline">\(dI/dt &lt; 0\)</span> and the arrows point downward. A trajectory starting to the left of the line (with <span class="math inline">\(S_0 &lt; \gamma/\beta = 1/\mathcal{R}_0\)</span>) can only move further left, and the infection declines from the outset. This is the idea behind <strong>herd immunity</strong>: if a sufficiently large fraction of the population is immune at the start, an introduced infection cannot spread, even though most individuals could in principle be infected.</p>
+<p>Second, <strong>the epidemic peaks exactly when <span class="math inline">\(S\)</span> crosses <span class="math inline">\(\gamma/\beta\)</span></strong>. When <span class="math inline">\(S_0 &gt; \gamma/\beta\)</span>, the infection initially grows exponentially, because each infected individual replaces itself with more than one new infection. As the epidemic proceeds, susceptible individuals are depleted, and <span class="math inline">\(S\)</span> decreases until it reaches <span class="math inline">\(\gamma/\beta\)</span>: at this point each infected individual only replaces itself, and <span class="math inline">\(I\)</span> reaches its maximum. Note that the epidemic starts to decline while most of the population is still susceptible (for <span class="math inline">\(S_0 \approx 1\)</span> and <span class="math inline">\(\mathcal{R}_0 = 2\)</span>, half of the population is susceptible at the peak, and the proportion of infected individuals is about 16%). The epidemic subsides not because everyone has been infected, but because infected individuals are now too rarely in contact with susceptible ones to sustain transmission.</p>
+<p>Third, <strong>the epidemic overshoots</strong>. After the peak, <span class="math inline">\(I\)</span> declines but is still positive, so that new infections continue to occur and <span class="math inline">\(S\)</span> keeps decreasing, ending well below <span class="math inline">\(\gamma/\beta\)</span>. In the phase plane, the trajectory continues to the left of the dashed line until <span class="math inline">\(I\)</span> vanishes on the horizontal axis. We have thus a counterintuitive result: lowering the susceptible proportion just below the threshold would be enough to stop the epidemic, but the epidemic itself reduces it far more. How far is determined by <span class="math inline">\(\mathcal{R}_0\)</span>, as we will see in the next section.</p>
+<p>Finally, note the effect of the initial condition: reducing <span class="math inline">\(S_0\)</span> by moving individuals to the recovered class (as would be done by vaccination) lowers the peak, makes the epidemic smaller, and delays it, until, for <span class="math inline">\(S_0 &lt; \gamma/\beta\)</span>, it disappears entirely. We will return to this point in the section on vaccination.</p>
 </section>
 </section>
 <section id="number-of-people-experiencing-infection-over-time" class="level2" data-number="4.4">
@@ -435,7 +442,72 @@ z \approx \frac{2(\mathcal{R}_0 - 1)}{\mathcal{R}_0^2} \approx 2 (\mathcal{R}_0 
 </section>
 <section id="vaccination" class="level2" data-number="4.5">
 <h2 data-number="4.5" class="anchored" data-anchor-id="vaccination"><span class="header-section-number">4.5</span> Vaccination</h2>
-<p>Explain how vaccination can be incorporated into the SIR model, and how it affects the dynamics of disease spread. Discuss herd immunity and the critical vaccination threshold.</p>
+<p>Vaccination is the most effective tool we have against infectious diseases, and the SIR model makes it easy to understand why. Suppose that, before the pathogen arrives, a fraction <span class="math inline">\(p\)</span> of the population is vaccinated with a vaccine that confers complete and lasting protection. Vaccinated individuals can neither be infected nor transmit, so they behave exactly like individuals who have recovered: they start in the <span class="math inline">\(R\)</span> compartment. The initial condition is then <span class="math inline">\(S_0 = 1 - p\)</span> (we neglect the small initial fraction of infected individuals), which is precisely what we changed with the slider in the figure of the previous section. Vaccination does not change the parameters <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\gamma\)</span> of the model, only the initial proportion of susceptible individuals.</p>
+<p>Recall that the number of infected individuals grows when <span class="math inline">\(\beta S/\gamma &gt; 1\)</span>. We call the quantity</p>
+<p><span id="eq-reff"><span class="math display">\[
+\mathcal{R}_{\text{eff}} = \mathcal{R}_0 \, S
+\tag{4.4}\]</span></span></p>
+<p>the <strong>effective reproduction number</strong>: the average number of secondary infections caused by an infected individual when a fraction <span class="math inline">\(S\)</span> of the population is susceptible. In a vaccinated population, a single infected individual introduced in the population has <span class="math inline">\(\mathcal{R}_{\text{eff}} = \mathcal{R}_0 (1 - p)\)</span>. The infection can invade only if this exceeds 1, and thus the epidemic is prevented when <span class="math inline">\(\mathcal{R}_0(1 - p) &lt; 1\)</span>, i.e., when the vaccination coverage exceeds the <strong>critical vaccination threshold</strong></p>
+<p><span id="eq-critical-vaccination"><span class="math display">\[
+p_c = 1 - \frac{1}{\mathcal{R}_0}.
+\tag{4.5}\]</span></span></p>
+<p>This is the same condition, <span class="math inline">\(S_0 &lt; \gamma/\beta\)</span>, that we found when exploring the dynamics of the model. The threshold depends on the pathogen only through <span class="math inline">\(\mathcal{R}_0\)</span>, and increases quickly with it: for <span class="math inline">\(\mathcal{R}_0 = 2\)</span> it is enough to immunize half of the population, but for <span class="math inline">\(\mathcal{R}_0 = 15\)</span> more than 93% of individuals must be immune (<a href="#tbl-critical-coverage" class="quarto-xref">Table&nbsp;<span>4.1</span></a>).</p>
+<div id="tbl-critical-coverage" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-critical-coverage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;4.1: Approximate critical vaccination thresholds from <a href="#eq-critical-vaccination" class="quarto-xref">Equation&nbsp;<span>4.5</span></a>. The values of <span class="math inline">\(\mathcal{R}_0\)</span> are rough estimates, and vary among populations.
+</figcaption>
+<div aria-describedby="tbl-critical-coverage-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Disease</th>
+<th><span class="math inline">\(\mathcal{R}_0\)</span> (approximate)</th>
+<th>Critical threshold <span class="math inline">\(p_c\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Smallpox</td>
+<td>3–6</td>
+<td>67–83%</td>
+</tr>
+<tr class="even">
+<td>Polio</td>
+<td>5–7</td>
+<td>80–86%</td>
+</tr>
+<tr class="odd">
+<td>Measles</td>
+<td>12–18</td>
+<td>92–94%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>This is the phenomenon of <strong>herd immunity</strong>: when more than a fraction <span class="math inline">\(p_c\)</span> of the population is immune, the infection cannot spread, and the individuals who cannot be vaccinated (e.g., newborns, immunocompromised individuals) are protected indirectly, because most of the people they come in contact with cannot transmit the disease. Herd immunity is a property of the population, not of individuals: the unvaccinated are safe only as long as the vaccinated majority is large enough, and only if they are surrounded by it.</p>
+<p>Coverage below <span class="math inline">\(p_c\)</span> does not prevent the epidemic, but it is still useful, because it makes the epidemic smaller. Since vaccinated individuals start in the recovered class, the final size relation generalizes to</p>
+<p><span class="math display">\[
+S(\infty) = S_0 \exp\!\bigl(-\mathcal{R}_0 \,(S_0 - S(\infty))\bigr), \qquad S_0 = 1 - p,
+\]</span></p>
+<p>as can be seen by repeating the derivation of the previous section without assuming <span class="math inline">\(S_0 \approx 1\)</span>. <a href="#fig-vaccination-final-size" class="quarto-xref">Figure&nbsp;<span>4.3</span></a> shows the fraction of the population that is eventually infected as a function of coverage. For <span class="math inline">\(\mathcal{R}_0 = 2\)</span>, immunizing a quarter of the population reduces the fraction ever infected from about 80% to 44%; at <span class="math inline">\(p = p_c\)</span> the epidemic disappears. For a pathogen with a large <span class="math inline">\(\mathcal{R}_0\)</span>, however, the curve falls slowly at first: for <span class="math inline">\(\mathcal{R}_0 = 15\)</span>, vaccinating half of the population still leaves 50% of it infected, and the threshold is reached only at 93% coverage.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-vaccination-final-size" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-vaccination-final-size-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03-pathogens_files/figure-html/fig-vaccination-final-size-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-vaccination-final-size-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.3: Fraction of the population eventually infected, <span class="math inline">\(S_0 - S(\infty)\)</span>, as a function of the fraction immunized before the epidemic, for three values of <span class="math inline">\(\mathcal{R}_0\)</span>. Dashed vertical lines mark the critical vaccination threshold <span class="math inline">\(p_c = 1 - 1/\mathcal{R}_0\)</span> (<a href="#eq-critical-vaccination" class="quarto-xref">Equation&nbsp;<span>4.5</span></a>), above which no epidemic occurs.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Two complications make eradication harder than <a href="#eq-critical-vaccination" class="quarto-xref">Equation&nbsp;<span>4.5</span></a> suggests. First, vaccines are not perfect: if a vaccine protects a fraction <span class="math inline">\(e\)</span> of the individuals who receive it (its <em>efficacy</em>), the fraction immune is <span class="math inline">\(e p\)</span>, and the threshold on coverage becomes <span class="math inline">\(p_c = (1 - 1/\mathcal{R}_0)/e\)</span>. For <span class="math inline">\(\mathcal{R}_0 = 15\)</span> and <span class="math inline">\(e = 0.95\)</span>, one needs to vaccinate more than 98% of the population; if <span class="math inline">\(e &lt; 1 - 1/\mathcal{R}_0\)</span>, no level of coverage can stop transmission, which is why measles vaccination requires a second dose. Second, the model assumes that individuals mix uniformly, so that only the average coverage matters. In reality, unvaccinated individuals are often clustered in space or in social groups: a country can have a national coverage above <span class="math inline">\(p_c\)</span> and still have communities well below it, in which outbreaks can occur. The examples below illustrate how these ideas play out for three diseases.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -455,7 +527,7 @@ The eradication of smallpox
 <img src="03-pathogens_files/figure-html/fig-smallpox-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-smallpox-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.3: Smallpox cases reported worldwide, 1920–1980. Data: WHO, compiled by Our World in Data. Dashed lines mark the start of the intensified eradication programme (1967) and the last natural case (1977). Reported cases are a small fraction of the true number: WHO estimated about 15 million cases in 1967, against roughly 130,000 reported.
+Figure&nbsp;4.4: Smallpox cases reported worldwide, 1920–1980. Data: WHO, compiled by Our World in Data. Dashed lines mark the start of the intensified eradication programme (1967) and the last natural case (1977). Reported cases are a small fraction of the true number: WHO estimated about 15 million cases in 1967, against roughly 130,000 reported.
 </figcaption>
 </figure>
 </div>
@@ -483,7 +555,7 @@ The resurgence of measles in the United States
 <img src="03-pathogens_files/figure-html/fig-us-measles-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-us-measles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.4: Reported measles cases in the US, 1938–2026 (log scale). Data from the CDC and earlier public health reports, compiled by Our World in Data. Dashed lines mark the licensure of the first measles vaccine (1963) and the declaration that measles was eliminated from the US (2000). The 2026 count (open circle) is incomplete: it covers cases through October 1.
+Figure&nbsp;4.5: Reported measles cases in the US, 1938–2026 (log scale). Data from the CDC and earlier public health reports, compiled by Our World in Data. Dashed lines mark the licensure of the first measles vaccine (1963) and the declaration that measles was eliminated from the US (2000). The 2026 count (open circle) is incomplete: it covers cases through October 1.
 </figcaption>
 </figure>
 </div>
@@ -491,7 +563,7 @@ Figure&nbsp;4.4: Reported measles cases in the US, 1938–2026 (log scale). Data
 </div>
 <p>Before the vaccine, hundreds of thousands of cases were reported every year. The introduction of the vaccine in 1963 led to a dramatic decline in measles cases.</p>
 <p>Note the spike in the number of cases in the period 1989–1991. The cause of this spike was attributed to low vaccination coverage among low-income, inner-city preschool-aged children who had not received their single recommended dose due to healthcare access barriers, underfunded public health infrastructure, and missed vaccination opportunities. In 1989, the CDC recommended adding a second dose of MMR before school entry. This was introduced because ~2–5% of individuals failed to develop immunity after a single dose (primary vaccine failure). This allowed to reach the minimum number of cases in recorded history, and in 2000 endemic transmission had stopped.</p>
-<p>Vaccination coverage among kindergartners has been reported by the CDC since the 2009–10 school year (<a href="#fig-us-kindergarten-mmr" class="quarto-xref">Figure&nbsp;<span>4.5</span></a>). National coverage with MMR hovered around the 95% needed to block transmission until 2019–20, and has since fallen steadily, while the fraction of children with an exemption from one or more vaccines has risen to its highest level on record.</p>
+<p>Vaccination coverage among kindergartners has been reported by the CDC since the 2009–10 school year (<a href="#fig-us-kindergarten-mmr" class="quarto-xref">Figure&nbsp;<span>4.6</span></a>). National coverage with MMR hovered around the 95% needed to block transmission until 2019–20, and has since fallen steadily, while the fraction of children with an exemption from one or more vaccines has risen to its highest level on record.</p>
 <p>Since then, imported cases have found pockets of unvaccinated individuals, and the numbers have risen again: 2025 saw 2,289 cases, and by October 2026 the count was the highest since 1991. Why does a small decline in vaccination coverage, which may look harmless, have such a large effect on a disease with a very high <span class="math inline">\(\mathcal{R}_0\)</span>?</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -501,7 +573,7 @@ Figure&nbsp;4.4: Reported measles cases in the US, 1938–2026 (log scale). Data
 <img src="03-pathogens_files/figure-html/fig-us-kindergarten-mmr-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-us-kindergarten-mmr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.5: MMR vaccination coverage (left) and exemption rate (right) among US kindergartners, school years 2009–10 to 2025–26. The dashed line marks 95% coverage. Data: CDC SchoolVaxView (state-reported); the 2010–11 school year was not reported. Note that coverage is measured at school entry.
+Figure&nbsp;4.6: MMR vaccination coverage (left) and exemption rate (right) among US kindergartners, school years 2009–10 to 2025–26. The dashed line marks 95% coverage. Data: CDC SchoolVaxView (state-reported); the 2010–11 school year was not reported. Note that coverage is measured at school entry.
 </figcaption>
 </figure>
 </div>
@@ -528,7 +600,7 @@ Why is the eradication of polio within reach?
 <img src="03-pathogens_files/figure-html/fig-wild-polio-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-wild-polio-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.6: Paralytic polio cases reported worldwide, 1980–2024 (log scale). Data: WHO via Our World in Data for 1980–2023 (cases from wild poliovirus only from 2001), and GPEI for 2024. The dashed line marks the 1988 resolution to eradicate polio. Reported cases are only a fraction of the true number: in 1988 about 350,000 cases were estimated.
+Figure&nbsp;4.7: Paralytic polio cases reported worldwide, 1980–2024 (log scale). Data: WHO via Our World in Data for 1980–2023 (cases from wild poliovirus only from 2001), and GPEI for 2024. The dashed line marks the 1988 resolution to eradicate polio. Reported cases are only a fraction of the true number: in 1988 about 350,000 cases were estimated.
 </figcaption>
 </figure>
 </div>
@@ -550,7 +622,7 @@ Figure&nbsp;4.6: Paralytic polio cases reported worldwide, 1980–2024 (log scal
 <img src="03-pathogens_files/figure-html/fig-sir-demography-diagram-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sir-demography-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.7: SIR model with demography. Newborns enter the susceptible class at constant rate <span class="math inline">\(\Lambda\)</span>; all compartments experience natural mortality at per-capita rate <span class="math inline">\(\mu\)</span>.
+Figure&nbsp;4.8: SIR model with demography. Newborns enter the susceptible class at constant rate <span class="math inline">\(\Lambda\)</span>; all compartments experience natural mortality at per-capita rate <span class="math inline">\(\mu\)</span>.
 </figcaption>
 </figure>
 </div>
@@ -573,7 +645,7 @@ Figure&nbsp;4.7: SIR model with demography. Newborns enter the susceptible class
 <img src="03-pathogens_files/figure-html/fig-sis-diagram-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sis-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.8: Flow diagram of the SIS model. Recovered individuals return immediately to the susceptible class at rate <span class="math inline">\(\gamma I\)</span>, conferring no lasting immunity.
+Figure&nbsp;4.9: Flow diagram of the SIS model. Recovered individuals return immediately to the susceptible class at rate <span class="math inline">\(\gamma I\)</span>, conferring no lasting immunity.
 </figcaption>
 </figure>
 </div>
@@ -594,7 +666,7 @@ Figure&nbsp;4.8: Flow diagram of the SIS model. Recovered individuals return imm
 <img src="03-pathogens_files/figure-html/fig-seir-diagram-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-seir-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.9: SEIR model with waning immunity. Exposed individuals (<span class="math inline">\(E\)</span>) progress to infectious at rate <span class="math inline">\(\sigma E\)</span>; recovered individuals (<span class="math inline">\(R\)</span>) lose immunity and re-enter the susceptible class at rate <span class="math inline">\(\delta R\)</span>.
+Figure&nbsp;4.10: SEIR model with waning immunity. Exposed individuals (<span class="math inline">\(E\)</span>) progress to infectious at rate <span class="math inline">\(\sigma E\)</span>; recovered individuals (<span class="math inline">\(R\)</span>) lose immunity and re-enter the susceptible class at rate <span class="math inline">\(\delta R\)</span>.
 </figcaption>
 </figure>
 </div>
@@ -609,14 +681,14 @@ Figure&nbsp;4.9: SEIR model with waning immunity. Exposed individuals (<span cla
 \end{aligned}
 \]</span></p>
 <p>You can find more complex models in which some compartments represent a disease vector (e.g., mosquitoes) or a pathogen (e.g., free-living bacteria) in the environment. These models are often referred to as <strong>vector-borne</strong> or <strong>environmental transmission</strong> models, respectively. While the number of compartments and the complexity of the models can vary widely, the basic principles of compartmental modeling remain the same: individuals move between compartments based on rates that depend on the current state of the system.</p>
-<p><a href="#fig-zika-model" class="quarto-xref">Figure&nbsp;<span>4.10</span></a> shows a more complex example from <span class="citation" data-cites="roosa2019identifiability">Roosa and Chowell (<a href="#ref-roosa2019identifiability" role="doc-biblioref">2019</a>)</span>: a model of <strong>Zika virus transmission</strong> that couples two interacting populations — humans and mosquitoes. The human population is divided into susceptible (<span class="math inline">\(S_h\)</span>), exposed (<span class="math inline">\(E_h\)</span>), asymptomatically infectious (<span class="math inline">\(A_h\)</span>), symptomatically infectious (<span class="math inline">\(I_{h1}\)</span>), convalescent (<span class="math inline">\(I_{h2}\)</span>), and recovered (<span class="math inline">\(R_h\)</span>) classes. Mosquitoes are divided into susceptible (<span class="math inline">\(S_v\)</span>), exposed (<span class="math inline">\(E_v\)</span>), and infectious (<span class="math inline">\(I_v\)</span>) classes. Transmission is bidirectional: infectious mosquitoes (<span class="math inline">\(I_v\)</span>) infect susceptible humans (<span class="math inline">\(S_h\)</span>), and infectious humans (<span class="math inline">\(A_h\)</span>, <span class="math inline">\(I_{h1}\)</span>) infect susceptible mosquitoes (<span class="math inline">\(S_v\)</span>).</p>
+<p><a href="#fig-zika-model" class="quarto-xref">Figure&nbsp;<span>4.11</span></a> shows a more complex example from <span class="citation" data-cites="roosa2019identifiability">Roosa and Chowell (<a href="#ref-roosa2019identifiability" role="doc-biblioref">2019</a>)</span>: a model of <strong>Zika virus transmission</strong> that couples two interacting populations — humans and mosquitoes. The human population is divided into susceptible (<span class="math inline">\(S_h\)</span>), exposed (<span class="math inline">\(E_h\)</span>), asymptomatically infectious (<span class="math inline">\(A_h\)</span>), symptomatically infectious (<span class="math inline">\(I_{h1}\)</span>), convalescent (<span class="math inline">\(I_{h2}\)</span>), and recovered (<span class="math inline">\(R_h\)</span>) classes. Mosquitoes are divided into susceptible (<span class="math inline">\(S_v\)</span>), exposed (<span class="math inline">\(E_v\)</span>), and infectious (<span class="math inline">\(I_v\)</span>) classes. Transmission is bidirectional: infectious mosquitoes (<span class="math inline">\(I_v\)</span>) infect susceptible humans (<span class="math inline">\(S_h\)</span>), and infectious humans (<span class="math inline">\(A_h\)</span>, <span class="math inline">\(I_{h1}\)</span>) infect susceptible mosquitoes (<span class="math inline">\(S_v\)</span>).</p>
 <div id="fig-zika-model" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-zika-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="images/zika_roosa2019_fig4.jpg" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-zika-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.10: Compartmental diagram for the Zika virus transmission model of <span class="citation" data-cites="roosa2019identifiability">Roosa and Chowell (<a href="#ref-roosa2019identifiability" role="doc-biblioref">2019</a>)</span>. The human population (top) is divided into six classes; the mosquito (vector) population (dark blue outline) into three. Arrows are labelled with the rates governing transitions between compartments.
+Figure&nbsp;4.11: Compartmental diagram for the Zika virus transmission model of <span class="citation" data-cites="roosa2019identifiability">Roosa and Chowell (<a href="#ref-roosa2019identifiability" role="doc-biblioref">2019</a>)</span>. The human population (top) is divided into six classes; the mosquito (vector) population (dark blue outline) into three. Arrows are labelled with the rates governing transitions between compartments.
 </figcaption>
 </figure>
 </div>
