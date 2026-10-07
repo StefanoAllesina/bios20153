@@ -57,6 +57,10 @@ With these qualitiative insights, we can now explore the dynamics of the SIR mod
 
 ### Dynamics of the SIR model {#sec-topic3-sir-dynamics}
 
+The figure below shows the dynamics of the model for $\beta = 2$ and $\gamma = 1$, so that $\mathcal{R}_0 = 2$. The left panel shows the proportion of the population in each compartment through time, starting from a small number of infected individuals ($I_0 = 0.01$). The right panel shows the same trajectory in the **phase plane**, with the susceptible proportion on the horizontal axis and the infected proportion on the vertical axis: time is not shown explicitly, but the trajectory is traced from the filled dot, and the grey arrows show the direction in which the system moves from any given state. The orange dashed line marks $S = \gamma/\beta$, the value of $S$ at which $dI/dt = 0$.
+
+In the interactive version, move the slider to change the initial fraction of susceptible individuals $S_0$; the remaining individuals ($1 - S_0 - I_0$) start in the recovered class, and are therefore immune. Try starting with a fully susceptible population ($S_0$ close to 1), and then progressively reduce $S_0$. In the PDF version, three representative values of $S_0$ are shown. As you do so, pay attention to three things: whether an epidemic occurs at all, how high the peak of $I$ is, and how many susceptible individuals remain at the end.
+
 ```{r}
 #| label: sir-dynamics-grid
 #| include: false
@@ -131,6 +135,16 @@ plot_sir_dynamics_static()
 ```
 :::
 
+What do we learn from the figure?
+
+First, **an epidemic occurs only if $S_0 > \gamma/\beta$**. To the right of the dashed line in the phase plane, $dI/dt > 0$ and the arrows point upward; to the left, $dI/dt < 0$ and the arrows point downward. A trajectory starting to the left of the line (with $S_0 < \gamma/\beta = 1/\mathcal{R}_0$) can only move further left, and the infection declines from the outset. This is the idea behind **herd immunity**: if a sufficiently large fraction of the population is immune at the start, an introduced infection cannot spread, even though most individuals could in principle be infected.
+
+Second, **the epidemic peaks exactly when $S$ crosses $\gamma/\beta$**. When $S_0 > \gamma/\beta$, the infection initially grows exponentially, because each infected individual replaces itself with more than one new infection. As the epidemic proceeds, susceptible individuals are depleted, and $S$ decreases until it reaches $\gamma/\beta$: at this point each infected individual only replaces itself, and $I$ reaches its maximum. Note that the epidemic starts to decline while most of the population is still susceptible (for $S_0 \approx 1$ and $\mathcal{R}_0 = 2$, half of the population is susceptible at the peak, and the proportion of infected individuals is about 16%). The epidemic subsides not because everyone has been infected, but because infected individuals are now too rarely in contact with susceptible ones to sustain transmission.
+
+Third, **the epidemic overshoots**. After the peak, $I$ declines but is still positive, so that new infections continue to occur and $S$ keeps decreasing, ending well below $\gamma/\beta$. In the phase plane, the trajectory continues to the left of the dashed line until $I$ vanishes on the horizontal axis. We have thus a counterintuitive result: lowering the susceptible proportion just below the threshold would be enough to stop the epidemic, but the epidemic itself reduces it far more. How far is determined by $\mathcal{R}_0$, as we will see in the next section.
+
+Finally, note the effect of the initial condition: reducing $S_0$ by moving individuals to the recovered class (as would be done by vaccination) lowers the peak, makes the epidemic smaller, and delays it, until, for $S_0 < \gamma/\beta$, it disappears entirely. We will return to this point in the section on vaccination.
+
 ## Number of people experiencing infection over time
 
 The SIR model cannot be solved analytically, but we can determine what fraction of the population was infected over the entire course of an epidemic — the **final attack rate** — without integrating the differential equations. As $t \to \infty$ the epidemic subsides: $I(\infty) = 0$, so all individuals are either susceptible or recovered, and $S(\infty) + R(\infty) = 1$.
@@ -181,7 +195,49 @@ In short: for $\mathcal{R}_0 \gtrsim 3$ use @eq-final-size-large, and for $\math
 
 ## Vaccination
 
-Explain how vaccination can be incorporated into the SIR model, and how it affects the dynamics of disease spread. Discuss herd immunity and the critical vaccination threshold.
+Vaccination is the most effective tool we have against infectious diseases, and the SIR model makes it easy to understand why. Suppose that, before the pathogen arrives, a fraction $p$ of the population is vaccinated with a vaccine that confers complete and lasting protection. Vaccinated individuals can neither be infected nor transmit, so they behave exactly like individuals who have recovered: they start in the $R$ compartment. The initial condition is then $S_0 = 1 - p$ (we neglect the small initial fraction of infected individuals), which is precisely what we changed with the slider in the figure of the previous section. Vaccination does not change the parameters $\beta$ and $\gamma$ of the model, only the initial proportion of susceptible individuals.
+
+Recall that the number of infected individuals grows when $\beta S/\gamma > 1$. We call the quantity
+
+$$
+\mathcal{R}_{\text{eff}} = \mathcal{R}_0 \, S
+$$ {#eq-reff}
+
+the **effective reproduction number**: the average number of secondary infections caused by an infected individual when a fraction $S$ of the population is susceptible. In a vaccinated population, a single infected individual introduced in the population has $\mathcal{R}_{\text{eff}} = \mathcal{R}_0 (1 - p)$. The infection can invade only if this exceeds 1, and thus the epidemic is prevented when $\mathcal{R}_0(1 - p) < 1$, i.e., when the vaccination coverage exceeds the **critical vaccination threshold**
+
+$$
+p_c = 1 - \frac{1}{\mathcal{R}_0}.
+$$ {#eq-critical-vaccination}
+
+This is the same condition, $S_0 < \gamma/\beta$, that we found when exploring the dynamics of the model. The threshold depends on the pathogen only through $\mathcal{R}_0$, and increases quickly with it: for $\mathcal{R}_0 = 2$ it is enough to immunize half of the population, but for $\mathcal{R}_0 = 15$ more than 93% of individuals must be immune (@tbl-critical-coverage).
+
+| Disease | $\mathcal{R}_0$ (approximate) | Critical threshold $p_c$ |
+|---|---|---|
+| Smallpox | 3–6 | 67–83% |
+| Polio | 5–7 | 80–86% |
+| Measles | 12–18 | 92–94% |
+
+: Approximate critical vaccination thresholds from @eq-critical-vaccination. The values of $\mathcal{R}_0$ are rough estimates, and vary among populations. {#tbl-critical-coverage}
+
+This is the phenomenon of **herd immunity**: when more than a fraction $p_c$ of the population is immune, the infection cannot spread, and the individuals who cannot be vaccinated (e.g., newborns, immunocompromised individuals) are protected indirectly, because most of the people they come in contact with cannot transmit the disease. Herd immunity is a property of the population, not of individuals: the unvaccinated are safe only as long as the vaccinated majority is large enough, and only if they are surrounded by it.
+
+Coverage below $p_c$ does not prevent the epidemic, but it is still useful, because it makes the epidemic smaller. Since vaccinated individuals start in the recovered class, the final size relation generalizes to
+
+$$
+S(\infty) = S_0 \exp\!\bigl(-\mathcal{R}_0 \,(S_0 - S(\infty))\bigr), \qquad S_0 = 1 - p,
+$$
+
+as can be seen by repeating the derivation of the previous section without assuming $S_0 \approx 1$. @fig-vaccination-final-size shows the fraction of the population that is eventually infected as a function of coverage. For $\mathcal{R}_0 = 2$, immunizing a quarter of the population reduces the fraction ever infected from about 80% to 44%; at $p = p_c$ the epidemic disappears. For a pathogen with a large $\mathcal{R}_0$, however, the curve falls slowly at first: for $\mathcal{R}_0 = 15$, vaccinating half of the population still leaves 50% of it infected, and the threshold is reached only at 93% coverage.
+
+```{r}
+#| label: fig-vaccination-final-size
+#| echo: false
+#| fig-height: 3.5
+#| fig-cap: "Fraction of the population eventually infected, $S_0 - S(\\infty)$, as a function of the fraction immunized before the epidemic, for three values of $\\mathcal{R}_0$. Dashed vertical lines mark the critical vaccination threshold $p_c = 1 - 1/\\mathcal{R}_0$ (@eq-critical-vaccination), above which no epidemic occurs."
+plot_vaccination_final_size()
+```
+
+Two complications make eradication harder than @eq-critical-vaccination suggests. First, vaccines are not perfect: if a vaccine protects a fraction $e$ of the individuals who receive it (its *efficacy*), the fraction immune is $e p$, and the threshold on coverage becomes $p_c = (1 - 1/\mathcal{R}_0)/e$. For $\mathcal{R}_0 = 15$ and $e = 0.95$, one needs to vaccinate more than 98% of the population; if $e < 1 - 1/\mathcal{R}_0$, no level of coverage can stop transmission, which is why measles vaccination requires a second dose. Second, the model assumes that individuals mix uniformly, so that only the average coverage matters. In reality, unvaccinated individuals are often clustered in space or in social groups: a country can have a national coverage above $p_c$ and still have communities well below it, in which outbreaks can occur. The examples below illustrate how these ideas play out for three diseases.
 
 
 ::: {.callout-note}

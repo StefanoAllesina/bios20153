@@ -550,3 +550,29 @@ plot_wild_polio_cases <- function() {
     scale_y_log10(labels = scales::comma, limits = c(1, 1e5)) +
     labs(x = NULL, y = "Reported wild poliovirus cases (log scale)")
 }
+
+plot_vaccination_final_size <- function(R0_vals = c(2, 5, 15)) {
+  final_infected <- function(R0, p) {
+    S0 <- 1 - p
+    if (R0 * S0 <= 1) return(0)
+    S_inf <- uniroot(function(s) s - S0 * exp(-R0 * (S0 - s)),
+                     c(1e-9, 1 / R0 - 1e-9))$root
+    S0 - S_inf
+  }
+  grid <- expand.grid(R0 = R0_vals, p = seq(0, 1, by = 0.005))
+  grid$z <- mapply(final_infected, grid$R0, grid$p)
+  grid$R0 <- factor(grid$R0, levels = R0_vals)
+  pc <- tibble(R0 = factor(R0_vals, levels = R0_vals), pc = 1 - 1 / R0_vals)
+
+  ggplot(grid, aes(p, z, color = R0)) +
+    geom_vline(data = pc, aes(xintercept = pc, color = R0),
+               linetype = "dashed", linewidth = 0.5, show.legend = FALSE) +
+    geom_line(linewidth = 0.9) +
+    scale_color_manual(values = c("#27ae60", "#e67e22", "#e74c3c"),
+                       name = "Basic reproduction number") +
+    scale_x_continuous(labels = scales::percent, limits = c(0, 1)) +
+    scale_y_continuous(labels = scales::percent, limits = c(0, 1)) +
+    labs(x = "Fraction of the population immunized before the epidemic",
+         y = "Fraction ever infected") +
+    theme(legend.position = "bottom")
+}
