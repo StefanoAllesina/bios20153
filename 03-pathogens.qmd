@@ -172,7 +172,20 @@ when $R_0$ is small
 Explain how vaccination can be incorporated into the SIR model, and how it affects the dynamics of disease spread. Discuss herd immunity and the critical vaccination threshold.
 
 
-here it would be good to have a timeline for the eradication of smallpox and the near eradication of polio
+::: {.callout-note}
+## The eradication of smallpox
+
+Smallpox is the only human disease that has been eradicated. The last natural case occurred in Somalia in 1977, and in 1980 the World Health Assembly declared the world free of smallpox. The figure below shows the number of cases reported to the World Health Organization each year.
+
+```{r}
+#| label: fig-smallpox
+#| echo: false
+#| fig-cap: "Smallpox cases reported worldwide, 1920–1980. Data: WHO, compiled by Our World in Data. Dashed lines mark the start of the intensified eradication programme (1967) and the last natural case (1977). Reported cases are a small fraction of the true number: WHO estimated about 15 million cases in 1967, against roughly 130,000 reported."
+plot_smallpox_cases()
+```
+
+Why was smallpox such a good target? Humans are the only host of the virus, so there is no animal reservoir from which it can re-invade. Infections are not silent: infected individuals develop a recognizable rash and are infectious mostly after it appears, so cases can be found, isolated, and the contacts of each case vaccinated ("ring vaccination") instead of vaccinating everybody. Survivors are immune for life, and the vaccine is cheap and stable. Finally, the basic reproduction number is moderate (typically estimated between 3 and 6), so that the fraction that must be immune to prevent spread, $1 - 1/R_0$, is relatively low.
+:::
 
 
 ::: {.callout-note}
@@ -201,6 +214,23 @@ Since then, imported cases have found pockets of unvaccinated individuals, and t
 #| fig-cap: "MMR vaccination coverage (left) and exemption rate (right) among US kindergartners, school years 2009–10 to 2025–26. The dashed line marks 95% coverage. Data: CDC SchoolVaxView (state-reported); the 2010–11 school year was not reported. Note that coverage is measured at school entry."
 plot_us_kindergarten_mmr()
 ```
+:::
+
+::: {.callout-note}
+## Why is the eradication of polio within reach?
+
+Polio is the second disease, after smallpox, that humanity is close to eradicating. When the World Health Assembly resolved to eradicate it in 1988, polio paralyzed hundreds of thousands of children each year in more than 125 countries. Today wild poliovirus type 1 is endemic only in Afghanistan and Pakistan, and the other two wild types have been declared eradicated (type 2 in 2015, type 3 in 2019).
+
+```{r}
+#| label: fig-wild-polio
+#| echo: false
+#| fig-cap: "Paralytic polio cases reported worldwide, 1980–2024 (log scale). Data: WHO via Our World in Data for 1980–2023 (cases from wild poliovirus only from 2001), and GPEI for 2024. The dashed line marks the 1988 resolution to eradicate polio. Reported cases are only a fraction of the true number: in 1988 about 350,000 cases were estimated."
+plot_wild_polio_cases()
+```
+
+The reasons for optimism are the same that made smallpox a good target. Poliovirus infects only humans and does not persist for long in the environment, so there is no reservoir. Immunity after infection or vaccination is long-lasting, and effective, inexpensive vaccines exist. The basic reproduction number is moderate (typically estimated between 5 and 7), so that coverage of roughly 80–85% is enough to stop transmission, compared with more than 90% for measles.
+
+Polio is harder than smallpox in one respect: fewer than 1 in 100 infections causes paralysis, so for each reported case hundreds of infections go unnoticed. This is why surveillance of paralysis must be complemented by testing of wastewater, and why a single case signals widespread transmission. Another difficulty is that the oral vaccine contains a weakened virus that, in under-immunized populations, can circulate for long enough to regain its ability to cause paralysis. These vaccine-derived cases are why the number of paralytic cases was not zero in recent years even though wild poliovirus has retreated to two countries.
 :::
 
 

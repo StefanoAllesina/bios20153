@@ -505,3 +505,35 @@ plot_us_kindergarten_mmr <- function() {
     facet_wrap(~measure, nrow = 1, scales = "free_y") +
     labs(x = "End of school year", y = NULL)
 }
+
+plot_smallpox_cases <- function() {
+  events <- tribble(
+    ~year, ~label,
+    1967,  "Intensified eradication programme",
+    1977,  "Last natural case"
+  )
+
+  read_csv("data/world_smallpox_cases.csv", show_col_types = FALSE) |>
+    ggplot(aes(year, cases)) +
+    geom_vline(data = events, aes(xintercept = year),
+               linetype = "dashed", color = "grey50") +
+    geom_text(data = events, aes(x = year, y = 6.5e5, label = label),
+              angle = 90, hjust = 1, vjust = -0.4, size = 3, color = "grey30",
+              inherit.aes = FALSE) +
+    geom_line(color = "#2980b9", linewidth = 0.6) +
+    geom_point(size = 0.8, color = "#2980b9") +
+    scale_y_continuous(labels = scales::comma, limits = c(0, 6.5e5)) +
+    labs(x = NULL, y = "Reported smallpox cases")
+}
+
+plot_wild_polio_cases <- function() {
+  read_csv("data/world_wild_polio_cases.csv", show_col_types = FALSE) |>
+    ggplot(aes(year, cases)) +
+    geom_vline(xintercept = 1988, linetype = "dashed", color = "grey50") +
+    annotate("text", x = 1988, y = 1.5, label = "Global eradication resolution",
+             angle = 90, hjust = 0, vjust = -0.4, size = 3, color = "grey30") +
+    geom_line(color = "#2980b9", linewidth = 0.6) +
+    geom_point(size = 0.8, color = "#2980b9") +
+    scale_y_log10(labels = scales::comma, limits = c(1, 1e5)) +
+    labs(x = NULL, y = "Reported wild poliovirus cases (log scale)")
+}
