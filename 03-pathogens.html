@@ -429,7 +429,34 @@ Figure&nbsp;4.2: Final attack rate <span class="math inline">\(1 - S(\infty)\)</
 <section id="vaccination" class="level2" data-number="4.5">
 <h2 data-number="4.5" class="anchored" data-anchor-id="vaccination"><span class="header-section-number">4.5</span> Vaccination</h2>
 <p>Explain how vaccination can be incorporated into the SIR model, and how it affects the dynamics of disease spread. Discuss herd immunity and the critical vaccination threshold.</p>
-<p>here it would be good to have a timeline for the eradication of smallpox and the near eradication of polio</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+The eradication of smallpox
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Smallpox is the only human disease that has been eradicated. The last natural case occurred in Somalia in 1977, and in 1980 the World Health Assembly declared the world free of smallpox. The figure below shows the number of cases reported to the World Health Organization each year.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-smallpox" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-smallpox-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03-pathogens_files/figure-html/fig-smallpox-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-smallpox-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.3: Smallpox cases reported worldwide, 1920–1980. Data: WHO, compiled by Our World in Data. Dashed lines mark the start of the intensified eradication programme (1967) and the last natural case (1977). Reported cases are a small fraction of the true number: WHO estimated about 15 million cases in 1967, against roughly 130,000 reported.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Why was smallpox such a good target? Humans are the only host of the virus, so there is no animal reservoir from which it can re-invade. Infections are not silent: infected individuals develop a recognizable rash and are infectious mostly after it appears, so cases can be found, isolated, and the contacts of each case vaccinated (“ring vaccination”) instead of vaccinating everybody. Survivors are immune for life, and the vaccine is cheap and stable. Finally, the basic reproduction number is moderate (typically estimated between 3 and 6), so that the fraction that must be immune to prevent spread, <span class="math inline">\(1 - 1/R_0\)</span>, is relatively low.</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -449,7 +476,7 @@ The resurgence of measles in the United States
 <img src="03-pathogens_files/figure-html/fig-us-measles-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-us-measles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.3: Reported measles cases in the US, 1938–2026 (log scale). Data from the CDC and earlier public health reports, compiled by Our World in Data. Dashed lines mark the licensure of the first measles vaccine (1963) and the declaration that measles was eliminated from the US (2000). The 2026 count (open circle) is incomplete: it covers cases through October 1.
+Figure&nbsp;4.4: Reported measles cases in the US, 1938–2026 (log scale). Data from the CDC and earlier public health reports, compiled by Our World in Data. Dashed lines mark the licensure of the first measles vaccine (1963) and the declaration that measles was eliminated from the US (2000). The 2026 count (open circle) is incomplete: it covers cases through October 1.
 </figcaption>
 </figure>
 </div>
@@ -457,7 +484,7 @@ Figure&nbsp;4.3: Reported measles cases in the US, 1938–2026 (log scale). Data
 </div>
 <p>Before the vaccine, hundreds of thousands of cases were reported every year. The introduction of the vaccine in 1963 led to a dramatic decline in measles cases.</p>
 <p>Note the spike in the number of cases in the period 1989–1991. The cause of this spike was attributed to low vaccination coverage among low-income, inner-city preschool-aged children who had not received their single recommended dose due to healthcare access barriers, underfunded public health infrastructure, and missed vaccination opportunities. In 1989, the CDC recommended adding a second dose of MMR before school entry. This was introduced because ~2–5% of individuals failed to develop immunity after a single dose (primary vaccine failure). This allowed to reach the minimum number of cases in recorded history, and in 2000 endemic transmission had stopped.</p>
-<p>Vaccination coverage among kindergartners has been reported by the CDC since the 2009–10 school year (<a href="#fig-us-kindergarten-mmr" class="quarto-xref">Figure&nbsp;<span>4.4</span></a>). National coverage with MMR hovered around the 95% needed to block transmission until 2019–20, and has since fallen steadily, while the fraction of children with an exemption from one or more vaccines has risen to its highest level on record.</p>
+<p>Vaccination coverage among kindergartners has been reported by the CDC since the 2009–10 school year (<a href="#fig-us-kindergarten-mmr" class="quarto-xref">Figure&nbsp;<span>4.5</span></a>). National coverage with MMR hovered around the 95% needed to block transmission until 2019–20, and has since fallen steadily, while the fraction of children with an exemption from one or more vaccines has risen to its highest level on record.</p>
 <p>Since then, imported cases have found pockets of unvaccinated individuals, and the numbers have risen again: 2025 saw 2,289 cases, and by October 2026 the count was the highest since 1991. Why does a small decline in vaccination coverage, which may look harmless, have such a large effect on a disease with a very high <span class="math inline">\(R_0\)</span>?</p>
 <div class="cell">
 <div class="cell-output-display">
@@ -467,12 +494,41 @@ Figure&nbsp;4.3: Reported measles cases in the US, 1938–2026 (log scale). Data
 <img src="03-pathogens_files/figure-html/fig-us-kindergarten-mmr-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-us-kindergarten-mmr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.4: MMR vaccination coverage (left) and exemption rate (right) among US kindergartners, school years 2009–10 to 2025–26. The dashed line marks 95% coverage. Data: CDC SchoolVaxView (state-reported); the 2010–11 school year was not reported. Note that coverage is measured at school entry.
+Figure&nbsp;4.5: MMR vaccination coverage (left) and exemption rate (right) among US kindergartners, school years 2009–10 to 2025–26. The dashed line marks 95% coverage. Data: CDC SchoolVaxView (state-reported); the 2010–11 school year was not reported. Note that coverage is measured at school entry.
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Why is the eradication of polio within reach?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Polio is the second disease, after smallpox, that humanity is close to eradicating. When the World Health Assembly resolved to eradicate it in 1988, polio paralyzed hundreds of thousands of children each year in more than 125 countries. Today wild poliovirus type 1 is endemic only in Afghanistan and Pakistan, and the other two wild types have been declared eradicated (type 2 in 2015, type 3 in 2019).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-wild-polio" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-wild-polio-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="03-pathogens_files/figure-html/fig-wild-polio-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-wild-polio-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4.6: Paralytic polio cases reported worldwide, 1980–2024 (log scale). Data: WHO via Our World in Data for 1980–2023 (cases from wild poliovirus only from 2001), and GPEI for 2024. The dashed line marks the 1988 resolution to eradicate polio. Reported cases are only a fraction of the true number: in 1988 about 350,000 cases were estimated.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The reasons for optimism are the same that made smallpox a good target. Poliovirus infects only humans and does not persist for long in the environment, so there is no reservoir. Immunity after infection or vaccination is long-lasting, and effective, inexpensive vaccines exist. The basic reproduction number is moderate (typically estimated between 5 and 7), so that coverage of roughly 80–85% is enough to stop transmission, compared with more than 90% for measles.</p>
+<p>Polio is harder than smallpox in one respect: fewer than 1 in 100 infections causes paralysis, so for each reported case hundreds of infections go unnoticed. This is why surveillance of paralysis must be complemented by testing of wastewater, and why a single case signals widespread transmission. Another difficulty is that the oral vaccine contains a weakened virus that, in under-immunized populations, can circulate for long enough to regain its ability to cause paralysis. These vaccine-derived cases are why the number of paralytic cases was not zero in recent years even though wild poliovirus has retreated to two countries.</p>
 </div>
 </div>
 </section>
@@ -487,7 +543,7 @@ Figure&nbsp;4.4: MMR vaccination coverage (left) and exemption rate (right) amon
 <img src="03-pathogens_files/figure-html/fig-sir-demography-diagram-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sir-demography-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.5: SIR model with demography. Newborns enter the susceptible class at constant rate <span class="math inline">\(\Lambda\)</span>; all compartments experience natural mortality at per-capita rate <span class="math inline">\(\mu\)</span>.
+Figure&nbsp;4.7: SIR model with demography. Newborns enter the susceptible class at constant rate <span class="math inline">\(\Lambda\)</span>; all compartments experience natural mortality at per-capita rate <span class="math inline">\(\mu\)</span>.
 </figcaption>
 </figure>
 </div>
@@ -510,7 +566,7 @@ Figure&nbsp;4.5: SIR model with demography. Newborns enter the susceptible class
 <img src="03-pathogens_files/figure-html/fig-sis-diagram-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sis-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.6: Flow diagram of the SIS model. Recovered individuals return immediately to the susceptible class at rate <span class="math inline">\(\gamma I\)</span>, conferring no lasting immunity.
+Figure&nbsp;4.8: Flow diagram of the SIS model. Recovered individuals return immediately to the susceptible class at rate <span class="math inline">\(\gamma I\)</span>, conferring no lasting immunity.
 </figcaption>
 </figure>
 </div>
@@ -531,7 +587,7 @@ Figure&nbsp;4.6: Flow diagram of the SIS model. Recovered individuals return imm
 <img src="03-pathogens_files/figure-html/fig-seir-diagram-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-seir-diagram-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.7: SEIR model with waning immunity. Exposed individuals (<span class="math inline">\(E\)</span>) progress to infectious at rate <span class="math inline">\(\sigma E\)</span>; recovered individuals (<span class="math inline">\(R\)</span>) lose immunity and re-enter the susceptible class at rate <span class="math inline">\(\delta R\)</span>.
+Figure&nbsp;4.9: SEIR model with waning immunity. Exposed individuals (<span class="math inline">\(E\)</span>) progress to infectious at rate <span class="math inline">\(\sigma E\)</span>; recovered individuals (<span class="math inline">\(R\)</span>) lose immunity and re-enter the susceptible class at rate <span class="math inline">\(\delta R\)</span>.
 </figcaption>
 </figure>
 </div>
@@ -546,14 +602,14 @@ Figure&nbsp;4.7: SEIR model with waning immunity. Exposed individuals (<span cla
 \end{aligned}
 \]</span></p>
 <p>You can find more complex models in which some compartments represent a disease vector (e.g., mosquitoes) or a pathogen (e.g., free-living bacteria) in the environment. These models are often referred to as <strong>vector-borne</strong> or <strong>environmental transmission</strong> models, respectively. While the number of compartments and the complexity of the models can vary widely, the basic principles of compartmental modeling remain the same: individuals move between compartments based on rates that depend on the current state of the system.</p>
-<p><a href="#fig-zika-model" class="quarto-xref">Figure&nbsp;<span>4.8</span></a> shows a more complex example from <span class="citation" data-cites="roosa2019identifiability">Roosa and Chowell (<a href="#ref-roosa2019identifiability" role="doc-biblioref">2019</a>)</span>: a model of <strong>Zika virus transmission</strong> that couples two interacting populations — humans and mosquitoes. The human population is divided into susceptible (<span class="math inline">\(S_h\)</span>), exposed (<span class="math inline">\(E_h\)</span>), asymptomatically infectious (<span class="math inline">\(A_h\)</span>), symptomatically infectious (<span class="math inline">\(I_{h1}\)</span>), convalescent (<span class="math inline">\(I_{h2}\)</span>), and recovered (<span class="math inline">\(R_h\)</span>) classes. Mosquitoes are divided into susceptible (<span class="math inline">\(S_v\)</span>), exposed (<span class="math inline">\(E_v\)</span>), and infectious (<span class="math inline">\(I_v\)</span>) classes. Transmission is bidirectional: infectious mosquitoes (<span class="math inline">\(I_v\)</span>) infect susceptible humans (<span class="math inline">\(S_h\)</span>), and infectious humans (<span class="math inline">\(A_h\)</span>, <span class="math inline">\(I_{h1}\)</span>) infect susceptible mosquitoes (<span class="math inline">\(S_v\)</span>).</p>
+<p><a href="#fig-zika-model" class="quarto-xref">Figure&nbsp;<span>4.10</span></a> shows a more complex example from <span class="citation" data-cites="roosa2019identifiability">Roosa and Chowell (<a href="#ref-roosa2019identifiability" role="doc-biblioref">2019</a>)</span>: a model of <strong>Zika virus transmission</strong> that couples two interacting populations — humans and mosquitoes. The human population is divided into susceptible (<span class="math inline">\(S_h\)</span>), exposed (<span class="math inline">\(E_h\)</span>), asymptomatically infectious (<span class="math inline">\(A_h\)</span>), symptomatically infectious (<span class="math inline">\(I_{h1}\)</span>), convalescent (<span class="math inline">\(I_{h2}\)</span>), and recovered (<span class="math inline">\(R_h\)</span>) classes. Mosquitoes are divided into susceptible (<span class="math inline">\(S_v\)</span>), exposed (<span class="math inline">\(E_v\)</span>), and infectious (<span class="math inline">\(I_v\)</span>) classes. Transmission is bidirectional: infectious mosquitoes (<span class="math inline">\(I_v\)</span>) infect susceptible humans (<span class="math inline">\(S_h\)</span>), and infectious humans (<span class="math inline">\(A_h\)</span>, <span class="math inline">\(I_{h1}\)</span>) infect susceptible mosquitoes (<span class="math inline">\(S_v\)</span>).</p>
 <div id="fig-zika-model" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-zika-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="images/zika_roosa2019_fig4.jpg" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-zika-model-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;4.8: Compartmental diagram for the Zika virus transmission model of <span class="citation" data-cites="roosa2019identifiability">Roosa and Chowell (<a href="#ref-roosa2019identifiability" role="doc-biblioref">2019</a>)</span>. The human population (top) is divided into six classes; the mosquito (vector) population (dark blue outline) into three. Arrows are labelled with the rates governing transitions between compartments.
+Figure&nbsp;4.10: Compartmental diagram for the Zika virus transmission model of <span class="citation" data-cites="roosa2019identifiability">Roosa and Chowell (<a href="#ref-roosa2019identifiability" role="doc-biblioref">2019</a>)</span>. The human population (top) is divided into six classes; the mosquito (vector) population (dark blue outline) into three. Arrows are labelled with the rates governing transitions between compartments.
 </figcaption>
 </figure>
 </div>
